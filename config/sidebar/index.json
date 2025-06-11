@@ -3,7 +3,7 @@
   "items": [
     {
       "document": "docs/Introduction.mdx",
-      "label": "Introduction",
+      "label": "Introduction to OzakAI",
       "_template": "doc"
     },
     {
@@ -14,18 +14,50 @@
           "document": "docs/How-to-Buy-OZ-Tokens/How-to-Buy-OZ-Tokens.mdx",
           "label": "How to Buy $OZ Tokens",
           "_template": "doc"
+        },
+        {
+          "document": "docs/How-to-Buy-OZ-Tokens/Set-Up-Your-Wallet.mdx",
+          "label": "Set Up Your Wallet",
+          "_template": "doc"
+        },
+        {
+          "document": "docs/How-to-Buy-OZ-Tokens/Fund-Your-Wallet-with-ETH.mdx",
+          "label": "Fund Your Wallet with ETH",
+          "_template": "doc"
+        },
+        {
+          "document": "docs/How-to-Buy-OZ-Tokens/Complete-Your-Purchase-Buy-OZ-Tokens.mdx",
+          "label": "Complete Your Purchase: Buy $OZ Tokens",
+          "_template": "doc"
         }
       ],
       "_template": "category"
     },
     {
-      "document": "docs/referral-system-explained.mdx",
-      "label": "Referral System Explained",
-      "_template": "doc"
+      "title": "Ozak AI ($OZ) Referral System",
+      "link": "generated",
+      "items": [
+        {
+          "document": "docs/referral-system-explained.mdx",
+          "label": "Referral System Explained",
+          "_template": "doc"
+        },
+        {
+          "document": "docs/Referral System Explained/How-to-Earn-Even-More-OZ.mdx",
+          "label": "How to Earn Even More $OZ",
+          "_template": "doc"
+        }
+      ],
+      "_template": "category"
     },
     {
       "document": "docs/presale-contract-info.mdx",
       "label": "Presale Contract Info",
+      "_template": "doc"
+    },
+    {
+      "document": "docs/Tokenomics.mdx",
+      "label": "Tokenomics",
       "_template": "doc"
     },
     {
@@ -34,8 +66,8 @@
       "_template": "doc"
     },
     {
-      "document": "docs/Tokenomics.mdx",
-      "label": "Tokenomics",
+      "document": "docs/Policies.mdx",
+      "label": "Policies",
       "_template": "doc"
     }
   ]

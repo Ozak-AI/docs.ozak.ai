@@ -36,6 +36,10 @@
   background-repeat: no-repeat !important;
 }
 
+.navbar__title {
+  display: none !important;
+}
+
 .hero__title {
   color: white !important;
   font-weight: 600 !important;
@@ -111,9 +115,7 @@ html[data-red-border] div#__docusaurus {
   }
 }
 
-.navbar__title {
-  flex: hidden !important;
-}
+
 /* Base styling for the unordered list */
 .table-of-contents {
   list-style-type: none; /* Removes default bullet points */
