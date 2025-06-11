@@ -5,10 +5,10 @@
     "src": "/img/Ozak-Logo-white.png"
   },
   "title": "   ",
-  "url": "https://tinasaurus.vercel.app/",
+  "url": "https://docs-stage.ozak.ai",
   "navbar": [
     {
-      "label": "Ozak",
+      "label": "OZAK AI",
       "link": "external",
       "externalLink": "https://ozak.ai",
       "position": "right"

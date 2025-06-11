@@ -109,7 +109,6 @@ const config = {
       ({
         docs: {
           sidebarPath: require.resolve("./sidebars.js"),
-          editUrl: docusaurusData.url + "/admin/#/collections/doc",   
           showLastUpdateTime: true,  
           routeBasePath: "/",   
         },
