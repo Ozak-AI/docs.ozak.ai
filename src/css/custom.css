@@ -1,0 +1,165 @@
+/**
+ * Any CSS included here will be global. The classic template
+ * bundles Infima by default. Infima is a CSS framework designed to
+ * work well for content-centric websites.
+ */
+
+/* You can override the default Infima variables here. */
+:root {
+  --ifm-color-primary: #2e8555;
+  --ifm-color-primary-dark: #29784c;
+  --ifm-color-primary-darker: #277148;
+  --ifm-color-primary-darkest: #205d3b;
+  --ifm-color-primary-light: #33925d;
+  --ifm-color-primary-lighter: #359962;
+  --ifm-color-primary-lightest: #3cad6e;
+  --ifm-code-font-size: 95%;
+  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
+}
+
+/* For readability concerns, you should choose a lighter palette in dark mode. */
+[data-theme="dark"] {
+  --ifm-color-primary: #25c2a0;
+  --ifm-color-primary-dark: #21af90;
+  --ifm-color-primary-darker: #1fa588;
+  --ifm-color-primary-darkest: #1a8870;
+  --ifm-color-primary-light: #29d5b0;
+  --ifm-color-primary-lighter: #32d8b4;
+  --ifm-color-primary-lightest: #4fddbf;
+  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
+}
+
+.hero--primary {
+  background-image: url(/img/page-hero-bg.e246a7269fe8b1e570a6218ac5f41f5b.svg) !important;
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+}
+
+.hero__title {
+  color: white !important;
+  font-weight: 600 !important;
+}
+
+html[data-theme="light"] .navbar .navbar__logo {
+  content: url(/img/Ozak-logo-Black.png);
+}
+html[data-theme="dark"] .navbar .navbar__logo {
+  content: url(/img/Ozak-Logo-white.png);
+}
+
+.navbar__inner {
+  max-width: var(--ifm-container-width-xl);
+  /* padding: 0 var(--ifm-spacing-horizontal); */
+  width: 100%;
+  margin: 0 auto;
+}
+
+.main-wrapper {
+  max-width: var(--ifm-container-width-xl);
+  /* padding: 0 var(--ifm-spacing-horizontal); */
+  width: 100%;
+  
+  margin: 30px auto;
+}
+
+@media (max-width: 1568px) {
+  .main-wrapper {
+ 
+    max-width: 100%;
+  }
+  .navbar__inner {
+    max-width: 100%;
+  }
+  
+}
+
+.hero__subtitle {
+  color: rgba(0, 0, 1, 0.9) !important;
+  font-weight: 400 !important;
+}
+
+.docSidebarContainer_YfHR {
+  border-right: 0px !important;
+}
+
+.menu__list-item:not(:first-child) {
+  margin-top: 0.6rem !important;
+}
+
+.menu__list .menu__list {
+  border-left: 1px solid var(--ifm-color-emphasis-200) !important;
+  padding-left: 5px !important;
+  margin-left: var(--ifm-menu-link-padding-horizontal);
+}
+
+img {
+  max-width: 80% !important;
+}
+
+.contents {
+  background-color: #000 !important;
+}
+
+html[data-red-border] div#__docusaurus {
+  border: red solid thick;
+}
+
+@media (min-width: 768px) {
+  .docItemCol_node_modules-\@docusaurus-theme-classic-lib-theme-DocItem-Layout-styles-module {
+    padding: 0px 50px !important;
+  }
+}
+
+.navbar__title {
+  flex: hidden !important;
+}
+/* Base styling for the unordered list */
+.table-of-contents {
+  list-style-type: none; /* Removes default bullet points */
+  padding-left: 0; /* Removes default browser padding */
+}
+
+/* Styling for the main list container with a left border */
+.table-of-contents__left-border {
+  border-left: 1px solid #eee; /* Adds a subtle left border */
+  padding-left: 16px; /* Creates space between the border and the text */
+}
+
+/* Styling for each list item */
+.table-of-contents li {
+  padding: 2px 0; /* Adds vertical padding for spacing between items */
+}
+
+
+.table-of-contents__link {
+  display: block; 
+  padding: 3px 6px;
+  text-decoration: none; 
+  border-radius: 2px; /* Adds slightly rounded corners */
+  transition: all 0.3s ease; /* Adds a smooth transition for hover effects */
+  font-size: 0.9rem; /* Sets a base font size */
+}
+
+
+.col--3 {
+  --ifm-col-width: calc(4 / 12 * 100%) !important; 
+}
+/* --- Hover Effects --- */
+
+/* Changes background and text color on hover */
+.table-of-contents__link:hover {
+  background-color: rgb(170, 170, 170, 0.4); /* A light grey background on hover */
+}
+
+/* --- Active/Highlighted State --- */
+
+
+
+/* --- Nested List Styling --- */
+
+/* Adds left margin to nested lists for indentation */
+.table-of-contents ul {
+  padding-left: 16px; /* Indents the nested list */
+  list-style-type: none; /* Ensures nested lists also have no bullets */
+}

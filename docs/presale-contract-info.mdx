@@ -1,0 +1,131 @@
+---
+title: Presale Contract Info
+---
+
+
+Everything you need to participate safely in the Ozak AI $OZ presale. All logic is transparent, non-custodial, and executed on Ethereum Mainnet.
+
+
+1. Contract Addresses & Verification
+
+
+| Contract Name     | What it does                                                  | Status                     | Where to verify                                                                                                    | Contract Address                           |
+| ----------------- | ------------------------------------------------------------- | -------------------------- | ------------------------------------------------------------------------------------------------------------------ | ------------------------------------------ |
+| OZ Token (ERC-20) | Defines supply, transfers, and EIP-20 events                  | To be deployed at TGE      | Address and full source will be published on https://ozak.ai and pinned in Telegram/X 30 min before the TGE block. | TBD                                        |
+| Presale Router    | Accepts ETH, USDT-ERC20, USDC-ERC20 → mints purchase receipts | Deployed (source verified) | A "Verified" badge on Etherscan lets anyone read the code and call functions directly.                             | 0xC73a02c63277fC12F28Ae6D78bD7E1B6b425911B |
+
+
+2. Network Parameters
+
+
+Chain: Ethereum Mainnet (Chain ID: 1)
+
+
+Explorer: https://etherscan.io
+
+
+All OZ transactions are immutable and publicly visible, ensuring provable allocation and referral rewards.
+
+
+3. Allocation Rules Hard-Coded in the Contract
+
+
+| Bucket               | Supply %            | Notes                                                       |
+| -------------------- | ------------------- | ----------------------------------------------------------- |
+| Presale              | 30 % (= 3 B OZ)     | 10 % liquid at TGE, remainder vests linearly over 6 months. |
+| Liquidity & Listings | 10 %                | Added to CEX/DEX LPs at TGE; locked 12 months.              |
+| Others               | See Tokenomics page | No presale contract access.                                 |
+
+
+The contract enforces a hard cap: once 3B tokens are allocated, the buy functions revert.
+
+
+4. Key Functions (Solidity ABI)
+
+
+| Function         | Signature                  | Purpose                                               |
+| ---------------- | -------------------------- | ----------------------------------------------------- |
+| `buyTokensETH()` | `payable`                  | Swaps incoming ETH for OZ at the current phase price. |
+| `buyTokens()`    | Requires prior `approve()` | Accepts USDT or USDC (ERC-20); same rate table.       |
+
+
+5. Security & Audit
+
+
+Audit firm: Certik - full report available here.
+
+
+Ownership: `Ownable` but timelocked; only the multisig can toggle phases or pause.
+
+
+Refunds: None – purchases are final per Terms of Service.
+
+
+6. Purchase Flow Recap
+
+
+1. Call `buyTokensETH()` (or approve + `buyTokens()`).
+
+
+2. Contract emits `TokensPurchased` (includes amount, wallet, phase).
+
+
+3. After TGE, users call `claim` → OZ appears in wallet.
+
+
+7. Eligibility & Legal
+
+
+Participation is subject to age, residency, and compliance checks laid out in the Terms of
+
+
+Service and User Consent form. Restricted jurisdictions will be blocked at the UI layer, but
+
+
+on-chain calls may still revert. Always ensure you meet the criteria before interacting with
+
+
+the contract.
+
+
+8. Gas-Saving Tips
+
+
+Batch buys: Buying once per phase costs less gas than many small buys.
+
+
+Use ETH where possible: ERC-20 approvals add an extra transaction.
+
+
+9. FAQ (Contract Edition)
+
+
+Q: Can I call the contract directly from Etherscan?
+
+
+A: Yes - paste the verified address into Etherscan, choose “Write Contract,” connect your
+
+
+wallet, and invoke `buyTokensETH()` or `buyTokens()`.
+
+
+Q: What happens if the presale hard cap isn’t reached?
+
+
+A: Unsold tokens are automatically sent to the Ecosystem pool after the claim window closes.
+
+
+TL;DR
+
+
+Ethereum Mainnet, fully verified contracts, 3B-token hard cap.
+
+
+Buy via ETH/USDT/USDC, watch your transaction on Etherscan, and claim your OZ once TGE
+
+
+is live. Security, transparency, and strict legal safeguards are baked in from block one.
+
+
+*Last updated: June 2025
+

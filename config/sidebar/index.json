@@ -1,0 +1,42 @@
+{
+  "label": "Docs Sidebar",
+  "items": [
+    {
+      "document": "docs/Introduction.mdx",
+      "label": "Introduction",
+      "_template": "doc"
+    },
+    {
+      "title": "How to Buy $OZ Tokens",
+      "link": "generated",
+      "items": [
+        {
+          "document": "docs/How-to-Buy-OZ-Tokens/How-to-Buy-OZ-Tokens.mdx",
+          "label": "How to Buy $OZ Tokens",
+          "_template": "doc"
+        }
+      ],
+      "_template": "category"
+    },
+    {
+      "document": "docs/referral-system-explained.mdx",
+      "label": "Referral System Explained",
+      "_template": "doc"
+    },
+    {
+      "document": "docs/presale-contract-info.mdx",
+      "label": "Presale Contract Info",
+      "_template": "doc"
+    },
+    {
+      "document": "docs/brand-assets.mdx",
+      "label": "Brand Assets",
+      "_template": "doc"
+    },
+    {
+      "document": "docs/Tokenomics.mdx",
+      "label": "Tokenomics",
+      "_template": "doc"
+    }
+  ]
+}

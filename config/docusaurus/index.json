@@ -1,0 +1,26 @@
+{
+  "label": "Settings",
+  "logo": {
+    "alt": "ozak ai",
+    "src": "/img/Ozak-Logo-white.png"
+  },
+  "title": "   ",
+  "url": "https://tinasaurus.vercel.app/",
+  "navbar": [
+    {
+      "label": "Ozak",
+      "link": "external",
+      "externalLink": "https://ozak.ai",
+      "position": "right"
+    }
+  ],
+  "footer": {
+    "style": "dark",
+    "links": [
+      {
+        "title": "Docs"
+      }
+    ],
+    "copyright": "OZAK.AI"
+  }
+}
