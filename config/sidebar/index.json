@@ -29,6 +29,11 @@
           "document": "docs/How-to-Buy-OZ-Tokens/Complete-Your-Purchase-Buy-OZ-Tokens.mdx",
           "label": "Complete Your Purchase: Buy $OZ Tokens",
           "_template": "doc"
+        },
+        {
+          "document": "docs/Cant-find-your-tokens.mdx",
+          "label": "Can’t find your tokens?",
+          "_template": "doc"
         }
       ],
       "_template": "category"
@@ -73,11 +78,6 @@
     {
       "document": "docs/Policies.mdx",
       "label": "Policies",
-      "_template": "doc"
-    },
-    {
-      "document": "docs/Cant-find-your-tokens.mdx",
-      "label": "Can’t find your tokens?",
       "_template": "doc"
     }
   ]
