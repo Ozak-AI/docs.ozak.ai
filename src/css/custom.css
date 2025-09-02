@@ -19,10 +19,10 @@
 
 /* For readability concerns, you should choose a lighter palette in dark mode. */
 [data-theme="dark"] {
-  --ifm-color-primary: #25c2a0;
-  --ifm-color-primary-dark: #21af90;
-  --ifm-color-primary-darker: #1fa588;
-  --ifm-color-primary-darkest: #1a8870;
+  --ifm-color-primary: #a6ff00;
+  --ifm-color-primary-dark: #a6ff00;
+  --ifm-color-primary-darker: #a6ff00;
+  --ifm-color-primary-darkest: #a6ff00;
   --ifm-color-primary-light: #29d5b0;
   --ifm-color-primary-lighter: #32d8b4;
   --ifm-color-primary-lightest: #4fddbf;
@@ -164,4 +164,9 @@ html[data-red-border] div#__docusaurus {
 .table-of-contents ul {
   padding-left: 16px; /* Indents the nested list */
   list-style-type: none; /* Ensures nested lists also have no bullets */
+}
+
+
+.menu__link--active:not(.menu__link--sublist) {
+    background-color: var(--ifm-menu-color-background-active);
 }
