@@ -6,34 +6,42 @@ title: Contract Audits
   `0xC73a02c63277fC12F28Ae6D78bD7E1B6b425911B`
 </Admonition>
 
-## Ozak AI: Pre-Sale Contract - Internal Audit
+## Ozak AI Presale Contract - External Audits
 
-Our in-house team conducted an exhaustive review using advanced code analysis tools, extensive unit tests, and integration tests to identify and address potential vulnerabilities.
-
-* Key focus areas included access control, fund withdrawal mechanisms, and presale logic integrity.
-* All critical and high-risk issues were resolved prior to deployment.
-* The contract has been deployed with verified source code and is monitored in real-time for on-chain activity.
-
-## Ozak AI : Pre-Sale Contract - External Audit
-
-### 🔒 Ozak.AI — CertiK Security Audit Summary
+### CertiK Security Audit
 
 * Audit Completed: June 16, 2025
 * Codebase: Private (Solidity, EVM Compatible)
 * Assessment Methods: Manual Review and Static Analysis
 * Ecosystem: EVM-Compatible, Presale Contract Audit
 
-### ✅ Key Findings
+#### Key Findings
 
 * No critical or major vulnerabilities found
-* All medium and minor issues resolved or acknowledged
-* Enhanced implementation features added (including oracle staleness checks, initializer protection, and address validations)
-* Multisig governance implemented, with timelock integration scheduled for future decentralization
+* All medium and minor issues were resolved or noted
+* We added some extra features for better security, like checks for oracle data freshness, protection against reinitialization, and address validations
+* Multisig setup is in place, with a timelock for more decentralization coming soon
 
-***
+### Sherlock Security Audit
+
+* Audit Completed: September 13, 2025
+* Codebase: Private (Solidity, EVM Compatible)
+* Assessment Methods: Manual Review and Static Analysis
+* Ecosystem: EVM-Compatible, Presale Contract Audit
+
+#### Key Findings
+
+* Some critical and some minor vulnerabilities were found
+* All of these issues, regardless of their severity, have been acknowledged and fixed.
+* Enhanced implementation features added for improved security and functionality
+* Strong emphasis on secure access controls and future decentralization
 
 ### 🔗 View CertiK Full Audit Report
 
 <Admonition type="info" title="Skynet">
   [go.ozak.ai/skynet](http://go.ozak.ai/skynet)
+</Admonition>
+
+<Admonition type="info" title="Sherlock Presale Audit">
+  [go.ozak.ai/sherlock](https://go.ozak.ai/sherlock)
 </Admonition>
