@@ -1,14 +1,15 @@
 {
   "label": "Settings",
   "logo": {
-    "alt": "ozak ai",
+    "alt": "Ozak AI",
     "src": "/img/Ozak-Logo-white.png"
   },
-  "title": "   Ozak AI",
+  "title": "Ozak AI",
+  "tagline": "Predictive AI Platform for Advanced Financial Intelligence",
   "url": "https://docs.ozak.ai",
   "navbar": [
     {
-      "label": "OZAK AI",
+      "label": "Ozak AI ",
       "link": "external",
       "externalLink": "https://ozak.ai",
       "position": "right"
@@ -21,6 +22,6 @@
         "title": "Docs"
       }
     ],
-    "copyright": "OZAK.AI"
+    "copyright": "Ozak AI"
   }
 }

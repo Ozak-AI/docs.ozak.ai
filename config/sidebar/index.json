@@ -2,87 +2,70 @@
   "label": "Docs Sidebar",
   "items": [
     {
-      "document": "docs/Introduction.mdx",
-      "label": "Introduction to OzakAI",
+      "document": "docs/Welcome-to-Ozak-AI.mdx",
+      "label": "Getting Started",
       "_template": "doc"
     },
     {
-      "title": "How to Buy $OZ Tokens",
-      "link": "generated",
-      "items": [
-        {
-          "document": "docs/How-to-Buy-OZ-Tokens/How-to-Buy-OZ-Tokens.mdx",
-          "label": "How to Buy $OZ Tokens",
-          "_template": "doc"
-        },
-        {
-          "document": "docs/How-to-Buy-OZ-Tokens/Set-Up-Your-Wallet.mdx",
-          "label": "Set Up Your Wallet",
-          "_template": "doc"
-        },
-        {
-          "document": "docs/How-to-Buy-OZ-Tokens/Fund-Your-Wallet-with-ETH.mdx",
-          "label": "Fund Your Wallet with ETH",
-          "_template": "doc"
-        },
-        {
-          "document": "docs/How-to-Buy-OZ-Tokens/Complete-Your-Purchase-Buy-OZ-Tokens.mdx",
-          "label": "Complete Your Purchase: Buy $OZ Tokens",
-          "_template": "doc"
-        },
-        {
-          "document": "docs/Cant-find-your-tokens.mdx",
-          "label": "Can’t find your tokens?",
-          "_template": "doc"
-        }
-      ],
-      "_template": "category"
+      "document": "docs/The-Ozak-AI-Ecosystem-Our-Products.mdx",
+      "label": "The Ozak AI Ecosystem: Our Products",
+      "_template": "doc"
     },
     {
-      "title": "Ozak AI ($OZ) Referral System",
+      "document": "docs/The-OZ-Token.mdx",
+      "label": "The $OZ Token",
+      "_template": "doc"
+    },
+    {
+      "title": "User Guides",
       "link": "generated",
       "items": [
         {
-          "document": "docs/referral-system-explained.mdx",
-          "label": "Referral System Explained",
+          "document": "docs/How-to-Acquire-OZ-Tokens.mdx",
+          "label": "How to Acquire $OZ Tokens",
           "_template": "doc"
         },
         {
-          "document": "docs/Referral System Explained/How-to-Earn-Even-More-OZ.mdx",
+          "document": "docs/Cant-find-your-OZ-tokens.mdx",
+          "label": "Can't find your $OZ tokens?",
+          "_template": "doc"
+        },
+        {
+          "document": "docs/OZ-Referral-System.mdx",
+          "label": "$OZ Referral System",
+          "_template": "doc"
+        },
+        {
+          "document": "docs/How-to-Earn-Even-More-OZ.mdx",
           "label": "How to Earn Even More $OZ",
           "_template": "doc"
+        },
+        {
+          "document": "docs/Ozak-AI-Rewards-Hub.mdx",
+          "label": "Ozak AI Rewards Hub",
+          "_template": "doc"
+        },
+        {
+          "document": "docs/Ozak-AI-Ranking-System-.mdx",
+          "label": "Ozak AI Ranking System ",
+          "_template": "doc"
         }
       ],
       "_template": "category"
-    },
-    {
-      "document": "docs/presale-contract-info.mdx",
-      "label": "Presale Contract Info",
-      "_template": "doc"
-    },
-    {
-      "document": "docs/Tokenomics.mdx",
-      "label": "Tokenomics",
-      "_template": "doc"
     },
     {
       "document": "docs/Contract-Audits.mdx",
-      "label": "Contract Audits",
+      "label": "Security",
       "_template": "doc"
     },
     {
-      "document": "docs/Rewards.mdx",
-      "label": "Rewards Hub",
+      "document": "docs/FAQs-and-Community.mdx",
+      "label": "FAQs and Community",
       "_template": "doc"
     },
     {
-      "document": "docs/brand-assets.mdx",
+      "document": "docs/Brand-Assets.mdx",
       "label": "Brand Assets",
-      "_template": "doc"
-    },
-    {
-      "document": "docs/Policies.mdx",
-      "label": "Policies",
       "_template": "doc"
     }
   ]

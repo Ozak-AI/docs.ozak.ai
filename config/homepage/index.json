@@ -1,13 +1,13 @@
 {
   "label": "Homepage",
-  "title": "Ozak Docs",
-  "description": "Description will go into a meta tag in <head />",
+  "title": "Ozak AI Docs",
+  "description": "Predictive Al Platform for Advanced Financial Intelligence",
   "blocks": [
     {
-      "title": "Predict the Future with Predictive AI",
-      "subtitle": "Ozak is Predictive AI powered decentralized network for advance data analytics & interpretation",
-      "document": "docs/Introduction.mdx",
-      "documentLabel": "Get Started",
+      "title": "Ozak AI",
+      "subtitle": "Predictive Al Platform for Advanced Financial Intelligence",
+      "document": "",
+      "documentLabel": "Ozak AI",
       "_template": "hero"
     },
     {
