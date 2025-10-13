@@ -1,0 +1,56 @@
+---
+title: Ozak AI Architecture
+---
+
+The technology behind Ozak AI is complex, but the logic behind it is straightforward. Let's break down the journey data takes through our system, step by step.
+
+## The Four Stages of Financial Intelligence
+
+The entire process can be understood in four key stages:
+
+![](/img/8.png)
+
+### Ingestion (OSN - Ozak Streaming Network)
+
+It all starts with data. The Ozak Streaming Network (OSN) is the system's gateway to the financial world.
+
+* It ingests massive, high-speed streams of data from countless on-chain and off-chain sources (the "Data Providers").
+* The OSN then normalizes and processes this raw information, preparing it for analysis.
+* Finally, it sends the processed data to be stored securely and records a summary of its work on the Smart Contract Execution Layer for verification.
+
+### Storage (Ozak Data Vaults)
+
+Once data is processed, it needs a safe place to live. That's the job of the Ozak Data Vaults.
+
+* Data is indexed and stored in these cryptographically secured, decentralized vaults.
+* The vaults act as a library, providing the latest data directly to the Neuron AI layer whenever a Prediction Agent needs it.
+* To ensure integrity, the vaults also report key metrics like data redundancy and validity to the Smart Contract Layer.
+
+### Inference (Neuron)
+
+This is where the magic happens. Neuron is the AI brain of the operation.
+
+* When you make a request through the Eon interface, it triggers our Prediction Agents within the Neuron layer.
+* These agents pull the specific data they need from the Data Vaults to perform complex analysis and generate predictive outputs.
+* Neuron is designed for efficiency and transparency, recording the cost of the analysis and the data used for each user request with the Smart Contract Layer.
+
+### Consumption (EON)
+
+The final step is getting those powerful insights to you in a way that's simple and intuitive.
+
+* The validated intelligence stream from Neuron is delivered directly to the Eon interface.
+* Eon is your control panel, allowing you to visualize the AI's findings, manage your agents, and make informed decisions.
+
+### The Glue Holding It All Together: The Smart Contract Execution Layer
+
+The Smart Contract Execution Layer sits at the center of everything. Think of it as the system's public ledger and chief orchestrator. It doesn't process the AI, but it records and verifies every important action that happens within the ecosystem.
+
+This layer records:
+
+* Processed data from the OSN.
+* Storage details from the Data Vaults.
+* The costs and data associated with every AI inference run from Neuron.
+
+By using smart contracts to manage these interactions, we ensure the entire process is transparent, auditable, and decentralized, putting you in control.
+
+
