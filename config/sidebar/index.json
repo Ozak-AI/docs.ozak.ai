@@ -12,6 +12,44 @@
       "_template": "doc"
     },
     {
+      "title": "Eon",
+      "link": "doc",
+      "docLink": "docs/EON/Welcome-to-Eon.mdx",
+      "items": [
+        {
+          "document": "docs/EON/Access--Security.mdx",
+          "label": "Access & Security",
+          "_template": "doc"
+        },
+        {
+          "document": "docs/EON/The-Home-Page-Your-HQ.mdx",
+          "label": "The Home Page (Your HQ)",
+          "_template": "doc"
+        },
+        {
+          "document": "docs/EON/The-Explore-Menu-Analysis-Tools.mdx",
+          "label": "The Explore Menu (Analysis Tools)",
+          "_template": "doc"
+        },
+        {
+          "document": "docs/EON/Threads-Managing-Intelligence.mdx",
+          "label": "Threads (Managing Intelligence)",
+          "_template": "doc"
+        },
+        {
+          "document": "docs/EON/Credits--Account.mdx",
+          "label": "Credits & Account",
+          "_template": "doc"
+        },
+        {
+          "document": "docs/EON/FAQs--Troubleshooting.mdx",
+          "label": "FAQs & Troubleshooting",
+          "_template": "doc"
+        }
+      ],
+      "_template": "category"
+    },
+    {
       "document": "docs/Ozak-AI-Architecture.mdx",
       "label": "Architecture",
       "_template": "doc"
