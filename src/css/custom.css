@@ -179,3 +179,16 @@ html[data-red-border] div#__docusaurus {
   max-width: 100% !important;
   cursor: zoom-in;
 }
+
+/* The SegRNN formula is a narrow image, so unlike the other formula
+   screenshots it does not fill the column and sits flush left. Centre it.
+   Substring match because Docusaurus appends a content hash to the filename. */
+.markdown img[src*="segrnn"] {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  /* 80% of the image's natural 418x216; height follows the aspect ratio. */
+  width: 334px;
+  max-width: 100%;
+  height: auto;
+}
