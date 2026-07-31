@@ -2,7 +2,7 @@
 title: Ozak AI Architecture
 ---
 
-The technology behind Ozak AI is layered, but the logic is straightforward: **data comes in, is stored securely, is analysed by AI, and reaches you as an insight** with every meaningful step recorded on-chain for verification.
+Ozak AI separates the work of prediction from the proof of it. Four layers move data from ingestion to insight, the Ozak Streaming Network, the Data Vaults, Neuron, and Eon, each scaling horizontally across a network of independently operated nodes. A fifth, the Smart Contract Execution Layer, coordinates and settles them without ever sitting in the latency path. The result is a forecasting system where speed and auditability are not traded against each other.
 
 ---
 
@@ -10,13 +10,13 @@ The technology behind Ozak AI is layered, but the logic is straightforward: **da
 
 Ozak AI is built as five cooperating layers. Four of them do work; one of them keeps score.
 
-| Layer | Product Name | Job | Node Type |
-| --- | --- | --- | --- |
-| Ingestion | **Ozak Streaming Network (OSN)** | Pulls in on-chain and off-chain data, normalises it | Relay nodes |
-| Storage | **Ozak Data Vaults** | Encrypted, decentralised, indexed storage | Storage nodes |
-| Intelligence | **Neuron** | Runs forecasting models and Prediction Agents | Inference nodes |
-| Interface | **Eon** | Chat, dashboards, agent management | Client |
-| Coordination | **Smart Contract Execution Layer** | Task assignment, payments, staking, proofs | On-chain |
+| Layer        | Product Name                       | Job                                                 | Node Type       |
+| ------------ | ---------------------------------- | --------------------------------------------------- | --------------- |
+| Ingestion    | **Ozak Streaming Network (OSN)**   | Pulls in on-chain and off-chain data, normalises it | Relay nodes     |
+| Storage      | **Ozak Data Vaults**               | Encrypted, decentralised, indexed storage           | Storage nodes   |
+| Intelligence | **Neuron**                         | Runs forecasting models and Prediction Agents       | Inference nodes |
+| Interface    | **Eon**                            | Chat, dashboards, agent management                  | Client          |
+| Coordination | **Smart Contract Execution Layer** | Task assignment, payments, staking, proofs          | On-chain        |
 
 [![Ozak AI architecture overview](/img/arch/architecture-overview.jpg)](/img/arch/architecture-overview.jpg)
 
@@ -76,11 +76,11 @@ This dual-layer check does two things: it keeps precision high on intent routing
 
 Three sequence architectures run in production, chosen because they fail in different ways.
 
-| Model | Mechanism | Best suited to |
-| --- | --- | --- |
-| **Temporal Fusion Transformer (TFT)** | Attention + gated residual networks + variable selection | Multi-horizon forecasts across heterogeneous covariates; per-horizon feature weighting makes it interpretable |
-| **Helformer** | Holt-Winters exponential smoothing fused with LSTM recurrence and Transformer attention | Markets with structural shifts and event-driven volatility |
-| **SegRNN** | Segmentation-aware RNN with latent regime variables | Discontinuous series - token unlocks, liquidity shocks |
+| Model                                 | Mechanism                                                                               | Best suited to                                                                                                |
+| ------------------------------------- | --------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| **Temporal Fusion Transformer (TFT)** | Attention + gated residual networks + variable selection                                | Multi-horizon forecasts across heterogeneous covariates; per-horizon feature weighting makes it interpretable |
+| **Helformer**                         | Holt-Winters exponential smoothing fused with LSTM recurrence and Transformer attention | Markets with structural shifts and event-driven volatility                                                    |
+| **SegRNN**                            | Segmentation-aware RNN with latent regime variables                                     | Discontinuous series - token unlocks, liquidity shocks                                                        |
 
 **TFT** - dynamic feature weighting and attention over covariates:
 
@@ -163,14 +163,14 @@ Operational guardrails block off-domain predictions, purely speculative outputs,
 
 **Contract set:**
 
-| Contract | Responsibility |
-| --- | --- |
-| **Task Orchestration** | Assigns work to AI, Data, and OSN nodes based on demand and available resources |
-| **Payment** | Disburses rewards trustlessly against verifiable contributions - uptime, storage, compute, relay |
-| **Staking** | Holds node collateral; slashes on dishonest or unmet obligations |
-| **User Auth** | Cryptographic identity and permission verification |
-| **User Data** | Data proofs and Hashes, metadata commitments, redundancy incentives |
-| **Referral** | Ecosystem growth incentives |
+| Contract               | Responsibility                                                                                   |
+| ---------------------- | ------------------------------------------------------------------------------------------------ |
+| **Task Orchestration** | Assigns work to AI, Data, and OSN nodes based on demand and available resources                  |
+| **Payment**            | Disburses rewards trustlessly against verifiable contributions - uptime, storage, compute, relay |
+| **Staking**            | Holds node collateral; slashes on dishonest or unmet obligations                                 |
+| **User Auth**          | Cryptographic identity and permission verification                                               |
+| **User Data**          | Data proofs and Hashes, metadata commitments, redundancy incentives                              |
+| **Referral**           | Ecosystem growth incentives                                                                      |
 
 **Cost posture:** the layer uses rollup technology, bundling many operations into single on-chain transactions. This matters because the economic model depends on frequent micro-transactions for work and payments - without batching, the coordination cost would exceed the value of the work being coordinated.
 
@@ -180,11 +180,11 @@ Operational guardrails block off-domain predictions, purely speculative outputs,
 
 **What it does:** The whole platform runs on a Decentralized Physical Infrastructure Network - a community-owned network of machines instead of one company's servers. Three node classes, three hardware profiles.
 
-| Node | Layer | Requirement | Function |
-| --- | --- | --- | --- |
-| **Inference Node** | AI Layer | High AI compute - GPUs, specialised accelerators | Executes model inference and agent reasoning |
-| **Storage Node** | Data Layer | High storage capacity, high availability | Holds encrypted, fragmented public and private data |
-| **Relay Node** | OSN Layer | High bandwidth, low latency, reliable connectivity | Bridges on-chain and off-chain data into the system |
+| Node               | Layer      | Requirement                                        | Function                                            |
+| ------------------ | ---------- | -------------------------------------------------- | --------------------------------------------------- |
+| **Inference Node** | AI Layer   | High AI compute - GPUs, specialised accelerators   | Executes model inference and agent reasoning        |
+| **Storage Node**   | Data Layer | High storage capacity, high availability           | Holds encrypted, fragmented public and private data |
+| **Relay Node**     | OSN Layer  | High bandwidth, low latency, reliable connectivity | Bridges on-chain and off-chain data into the system |
 
 **Why decentralisation is load-bearing here, not decorative:**
 
@@ -212,5 +212,3 @@ Putting it together - here is what happens between a question and an answer.
 7. **Narrative synthesis** - the LLM layer translates quantitative output into interpretable explanation with confidence metrics attached.
 8. **Delivery** - results reach the Eon dashboard with low latency and explicit confidence scoring.
 9. **Settlement** - inference receipts, storage attestations, and relay proofs are committed on-chain; contributing nodes are paid.
-
----
