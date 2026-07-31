@@ -115,6 +115,18 @@
       "document": "docs/Policies-.mdx",
       "label": "Policies",
       "_template": "doc"
+    },
+    {
+      "title": "Widgets",
+      "link": "generated",
+      "items": [
+        {
+          "document": "docs/Widgets/Single-Signal-Card.mdx",
+          "label": "Single Signal Card",
+          "_template": "doc"
+        }
+      ],
+      "_template": "category"
     }
   ]
 }
