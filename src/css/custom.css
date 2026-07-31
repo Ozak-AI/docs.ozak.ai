@@ -170,3 +170,12 @@ html[data-red-border] div#__docusaurus {
 .menu__link--active:not(.menu__link--sublist) {
     background-color: var(--ifm-menu-color-background-active);
 }
+
+/* Architecture diagrams are linked to their full-size file so they can be
+   opened for detail. Let those use the full content width (the global img rule
+   above caps at 80%, which makes wide diagrams hard to read) and hint that
+   they are clickable. */
+.markdown a > img {
+  max-width: 100% !important;
+  cursor: zoom-in;
+}

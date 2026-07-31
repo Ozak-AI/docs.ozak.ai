@@ -2,55 +2,215 @@
 title: Ozak AI Architecture
 ---
 
-The technology behind Ozak AI is complex, but the logic behind it is straightforward. Let's break down the journey data takes through our system, step by step.
+The technology behind Ozak AI is layered, but the logic is straightforward: **data comes in, is stored securely, is analysed by AI, and reaches you as an insight** with every meaningful step recorded on-chain for verification.
 
-## The Four Stages of Financial Intelligence
+---
 
-The entire process can be understood in four key stages:
+## 1. Architectural Overview
 
-![](/img/8.png)
+Ozak AI is built as five cooperating layers. Four of them do work; one of them keeps score.
 
-### Ingestion (OSN - Ozak Streaming Network)
+| Layer | Product Name | Job | Node Type |
+| --- | --- | --- | --- |
+| Ingestion | **Ozak Streaming Network (OSN)** | Pulls in on-chain and off-chain data, normalises it | Relay nodes |
+| Storage | **Ozak Data Vaults** | Encrypted, decentralised, indexed storage | Storage nodes |
+| Intelligence | **Neuron** | Runs forecasting models and Prediction Agents | Inference nodes |
+| Interface | **Eon** | Chat, dashboards, agent management | Client |
+| Coordination | **Smart Contract Execution Layer** | Task assignment, payments, staking, proofs | On-chain |
 
-It all starts with data. The Ozak Streaming Network (OSN) is the system's gateway to the financial world.
+[![Ozak AI architecture overview](/img/arch/architecture-overview.jpg)](/img/arch/architecture-overview.jpg)
 
-* It ingests massive, high-speed streams of data from countless on-chain and off-chain sources (the "Data Providers").
-* The OSN then normalizes and processes this raw information, preparing it for analysis.
-* Finally, it sends the processed data to be stored securely and records a summary of its work on the Smart Contract Execution Layer for verification.
+---
 
-### Storage (Ozak Data Vaults)
+## 2. Ozak Streaming Network (OSN)
 
-Once data is processed, it needs a safe place to live. That's the job of the Ozak Data Vaults.
+**What it does:** OSN is the system's gateway to the financial world. It ingests high-speed streams from on-chain and off-chain sources, normalises them, and hands clean data to the Vaults.
 
-* Data is indexed and stored in these cryptographically secured, decentralized vaults.
-* The vaults act as a library, providing the latest data directly to the Neuron AI layer whenever a Prediction Agent needs it.
-* To ensure integrity, the vaults also report key metrics like data redundancy and validity to the Smart Contract Layer.
+**How it works:**
 
-### Inference (Neuron)
+- **Ingestion** runs over exchange APIs, RPC and indexer endpoints, macro feeds, news wires, and social streams.
+- **Apache Kafka** manages the stream topology, giving durable, replayable, partitioned delivery that survives network disruption.
+- **Apache Flink** handles real-time processing - complex event processing, filtering, enrichment, windowed aggregation, and schema normalisation.
+- **Horizontal scaling** is the default posture. As throughput grows, relay nodes are added rather than existing nodes being upsized.
+- **Validation before propagation.** Relay nodes attest to data authenticity before it enters the system, which keeps malformed or adversarial feeds out of the model path.
 
-This is where the magic happens. Neuron is the AI brain of the operation.
+[![Ozak Streaming Network relay node](/img/arch/ozak-streaming-network.jpg)](/img/arch/ozak-streaming-network.jpg)
 
-* When you make a request through the Eon interface, it triggers our Prediction Agents within the Neuron layer.
-* These agents pull the specific data they need from the Data Vaults to perform complex analysis and generate predictive outputs.
-* Neuron is designed for efficiency and transparency, recording the cost of the analysis and the data used for each user request with the Smart Contract Layer.
+---
 
-### Consumption (EON)
+## 3. Ozak Data Vaults
 
-The final step is getting those powerful insights to you in a way that's simple and intuitive.
+**What it does:** Once data is processed, it needs a safe place to live. The Vaults are cryptographically secured, decentralised storage that act as the library Neuron reads from.
 
-* The validated intelligence stream from Neuron is delivered directly to the Eon interface.
-* Eon is your control panel, allowing you to visualize the AI's findings, manage your agents, and make informed decisions.
+**How it works:**
 
-### The Glue Holding It All Together: The Smart Contract Execution Layer
+- **Encryption at rest** across all datasets, with keys held outside the storage plane.
+- **Fragmentation and distribution.** Data is sharded and replicated across multiple storage nodes, so no single node holds a complete or readable copy.
+- **Redundancy** guarantees availability when nodes go offline, and makes tampering detectable rather than silent.
+- **Access control enforced by smart contract.** Grant and revoke rules live on-chain, so permissions are verifiable rather than trust-based.
+- **Retrieval is optimised for inference.** Prediction Agents need low-latency reads on wide, sparse, heterogeneous datasets, so the Vaults combine structured stores with vector and document stores rather than forcing one engine to do everything.
 
-The Smart Contract Execution Layer sits at the center of everything. Think of it as the system's public ledger and chief orchestrator. It doesn't process the AI, but it records and verifies every important action that happens within the ecosystem.
+[![Ozak Data Vaults storage node](/img/arch/ozak-data-vaults.jpg)](/img/arch/ozak-data-vaults.jpg)
 
-This layer records:
+---
 
-* Processed data from the OSN.
-* Storage details from the Data Vaults.
-* The costs and data associated with every AI inference run from Neuron.
+## 4. Neuron - The Predictive AI Layer
 
-By using smart contracts to manage these interactions, we ensure the entire process is transparent, auditable, and decentralized, putting you in control.
+**What it does:** Neuron is the brain. It turns a natural-language question into a quantitative forecast with a confidence score attached.
 
+### 4.1 Domain Relevance and Intent Mapping
 
+Every query passes a two-stage filter before any compute is spent on it.
+
+- **Intent classification** maps the query into a defined intent set - technical analysis, unlock events, market prediction, sentiment assessment, event calendar.
+
+![Intent classification](/img/arch/intent-classification.png)
+
+- **Domain alignment** is verified by cosine similarity against domain prototype embeddings, and rejected below a threshold.
+
+![Domain alignment by cosine similarity](/img/arch/domain-similarity.png)
+
+This dual-layer check does two things: it keeps precision high on intent routing, and it stops the system from confidently answering questions that fall outside its competence.
+
+### 4.2 The Forecasting Models
+
+Three sequence architectures run in production, chosen because they fail in different ways.
+
+| Model | Mechanism | Best suited to |
+| --- | --- | --- |
+| **Temporal Fusion Transformer (TFT)** | Attention + gated residual networks + variable selection | Multi-horizon forecasts across heterogeneous covariates; per-horizon feature weighting makes it interpretable |
+| **Helformer** | Holt-Winters exponential smoothing fused with LSTM recurrence and Transformer attention | Markets with structural shifts and event-driven volatility |
+| **SegRNN** | Segmentation-aware RNN with latent regime variables | Discontinuous series - token unlocks, liquidity shocks |
+
+**TFT** - dynamic feature weighting and attention over covariates:
+
+![Temporal Fusion Transformer](/img/arch/tft.png)
+
+**Helformer** - smoothing components feeding a Transformer block:
+
+![Helformer](/img/arch/helformer.png)
+
+**SegRNN** - explicit regime segmentation:
+
+![SegRNN](/img/arch/segrnn.png)
+
+[![Neuron relevance gate and model bank](/img/arch/the-forecasting-models.jpg)](/img/arch/the-forecasting-models.jpg)
+
+### 4.3 Prediction Agents
+
+Prediction Agents (PAs) are the user-facing wrapper around the model bank. Each PA is built on TensorFlow and PyTorch, trained with supervised and unsupervised techniques, and configurable on datasets, parameters, asset classes, and risk tolerance - so a momentum agent and a value agent can run side by side against the same underlying models.
+
+---
+
+## 5. Agentic Orchestration Layer
+
+**What it does:** A single forecast is rarely a full answer. The orchestration layer coordinates specialist agents and merges their conclusions into one coherent, confidence-weighted response.
+
+**Standing agents:**
+
+- **Prediction Agent** - executes TFT, Helformer, and SegRNN forecasts
+- **Technical Agent** - evaluates market indicators and price structure
+- **Sentiment Agent** - aggregates social and on-chain sentiment
+- **Event Agent** - detects unlocks, protocol updates, announcements
+
+Coordination is a graph, not a pipeline:
+
+![Orchestration graph](/img/arch/orchestration-graph.png)
+
+Vertices are agents, edges encode dependencies, and the aggregation function **M** produces a contextually consistent, confidence-weighted result. The graph structure is what enables parallel inference, cross-domain dependency handling, and confidence propagation - and it lets low-confidence branches trigger fallbacks instead of shipping a weak answer.
+
+[![Agentic orchestration graph](/img/arch/agentic-orchestration-layer.jpg)](/img/arch/agentic-orchestration-layer.jpg)
+
+### 5.1 Custom Agents
+
+Users can instantiate their own agents, which then join the same graph as first-class participants:
+
+![Custom agents](/img/arch/custom-agents.png)
+
+A custom agent can depend on standing agents. For example, an agent monitoring DeFi unlock events can consume the Sentiment Agent's output to generate short-term volatility calls. Agent logic is iteratively refinable - data streams, forecast horizons, and thresholds can all be adjusted without rebuilding the agent.
+
+### 5.2 Confidence Metrics and Guardrails
+
+Every agent emits a confidence score, and those scores propagate all the way to the user rather than being collapsed into a single number.
+
+![Confidence metrics](/img/arch/confidence-metrics.png)
+
+Operational guardrails block off-domain predictions, purely speculative outputs, and anything that reads as an implied financial guarantee.
+
+---
+
+## 6. Eon - Interface and Reasoning Layer
+
+**What it does:** Eon is your control panel. It's where you ask questions, watch agents, and read results.
+
+**How it works:**
+
+- **LLM reasoning sits above the agent graph.** Plain-language queries are parsed, decomposed, and mapped into multi-agent workflows; quantitative agent outputs come back as interpretable narrative.
+
+![LLM reasoning layer](/img/arch/llm-reasoning.png)
+
+- **Conversational depth.** Follow-up queries, scenario simulations, and comparative analyses are supported, so complex multi-dimensional relationships are explorable without technical expertise.
+- **Confidence is surfaced, not hidden.** Forecast probabilities, trends, and confidence metrics are shown alongside every result.
+- **Built on React.js** for a responsive experience across devices, with interactive charts, personalised dashboards, and direct smart contract interaction.
+
+[![Eon interface and reasoning layer](/img/arch/eon-interface-and-reasoning-layer.jpg)](/img/arch/eon-interface-and-reasoning-layer.jpg)
+
+---
+
+## 7. Smart Contract Execution Layer
+
+**What it does:** The Smart Contract Execution Layer sits at the centre of everything. It doesn't run the AI - it records and verifies every important action in the ecosystem, and it pays the people who did the work.
+
+**Contract set:**
+
+| Contract | Responsibility |
+| --- | --- |
+| **Task Orchestration** | Assigns work to AI, Data, and OSN nodes based on demand and available resources |
+| **Payment** | Disburses rewards trustlessly against verifiable contributions - uptime, storage, compute, relay |
+| **Staking** | Holds node collateral; slashes on dishonest or unmet obligations |
+| **User Auth** | Cryptographic identity and permission verification |
+| **User Data** | Data proofs and Hashes, metadata commitments, redundancy incentives |
+| **Referral** | Ecosystem growth incentives |
+
+**Cost posture:** the layer uses rollup technology, bundling many operations into single on-chain transactions. This matters because the economic model depends on frequent micro-transactions for work and payments - without batching, the coordination cost would exceed the value of the work being coordinated.
+
+---
+
+## 8. DePIN Node Topology
+
+**What it does:** The whole platform runs on a Decentralized Physical Infrastructure Network - a community-owned network of machines instead of one company's servers. Three node classes, three hardware profiles.
+
+| Node | Layer | Requirement | Function |
+| --- | --- | --- | --- |
+| **Inference Node** | AI Layer | High AI compute - GPUs, specialised accelerators | Executes model inference and agent reasoning |
+| **Storage Node** | Data Layer | High storage capacity, high availability | Holds encrypted, fragmented public and private data |
+| **Relay Node** | OSN Layer | High bandwidth, low latency, reliable connectivity | Bridges on-chain and off-chain data into the system |
+
+**Why decentralisation is load-bearing here, not decorative:**
+
+- **No single point of failure.** Data survives node outages because it's replicated across the storage plane.
+- **Censorship resistance and open participation.** Anyone with suitable hardware can contribute compute and earn rewards, which prevents a handful of operators monopolising the inference layer.
+- **Tamper evidence.** Fragmentation plus on-chain proofs mean data modification is detectable, not silent.
+- **Economic honesty.** Staking makes misbehaviour expensive; slashing makes it costly in practice.
+
+[![DePIN node topology](/img/arch/depin-node-topology.jpg)](/img/arch/depin-node-topology.jpg)
+
+---
+
+## 9. End-to-End Request Lifecycle
+
+Putting it together - here is what happens between a question and an answer.
+
+[![End-to-end request lifecycle](/img/arch/end-to-end-request-lifecycle.jpg)](/img/arch/end-to-end-request-lifecycle.jpg)
+
+1. **Data aggregation** - time-series, sentiment, events, and relational datasets stream in continuously through OSN, independent of any user request.
+2. **Query intake** - a natural-language question arrives in Eon; the LLM layer parses and decomposes it.
+3. **Relevance gating** - intent is classified and domain alignment is checked. Off-domain queries stop here.
+4. **Model inference** - TFT, Helformer, and SegRNN generate forecasts against features assembled from the Vaults and the OSN cache.
+5. **Agent coordination** - the orchestration graph merges predictive, technical, sentiment, and event reasoning, including any custom agents.
+6. **Guardrail evaluation** - confidence thresholds are applied; low-confidence branches route to fallbacks.
+7. **Narrative synthesis** - the LLM layer translates quantitative output into interpretable explanation with confidence metrics attached.
+8. **Delivery** - results reach the Eon dashboard with low latency and explicit confidence scoring.
+9. **Settlement** - inference receipts, storage attestations, and relay proofs are committed on-chain; contributing nodes are paid.
+
+---
