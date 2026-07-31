@@ -1,0 +1,1740 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Expanded signal scroller with AI insight — Ozak AI Market Signal Widgets</title>
+<style>
+/* ==========================================================================
+   Configurator chrome — the page around the widget preview.
+   None of this ships with the embed; it exists only on the config pages.
+   ========================================================================== */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+:root {
+  --pg:      #ffffff;
+  --panel:   #ffffff;
+  --line:    #e4e6e8;
+  --line-2:  #eef0f1;
+  --ink:     #0b0b0b;
+  --ink-2:   #5c6167;
+  --ink-3:   #8b9096;
+  --accent:  #32b232;
+  --radius:  12px;
+  --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+}
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  font-family: var(--font);
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--ink);
+  background: var(--pg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* -------------------------------------------------------------------- page */
+
+.wrap { max-width: 1180px; margin: 0 auto; padding: 34px 28px 72px; }
+
+@media (min-width: 900px) {
+  .wrap {
+    display: grid;
+    grid-template-columns: minmax(320px, 400px) 1fr;
+    align-items: start;
+    gap: 28px;
+  }
+
+  .preview {
+    position: sticky;
+    top: 20px;
+    margin-bottom: 0;
+  }
+}
+
+.section-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 14px;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.section-bar h2 {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+
+.section-bar .hint { font-size: 12px; color: var(--ink-3); }
+
+.preview-tools { display: flex; gap: 14px; align-items: center; }
+
+/* ----------------------------------------------------------------- preview */
+
+.preview { margin-bottom: 34px; }
+
+.stage {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: #eceef0;
+  overflow: hidden;
+  transition: background 200ms ease;
+}
+
+.stage[data-stage-theme="dark"] { background: #141414; border-color: #2a2a2a; }
+
+.stage-inner {
+  display: flex;
+  justify-content: center;
+  padding: 34px 24px;
+}
+
+.stage-hold { width: 100%; transition: max-width 200ms ease; }
+
+.stage-meta {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 9px 14px;
+  font-size: 11.5px;
+  color: var(--ink-3);
+  border-top: 1px solid var(--line);
+  background: var(--panel);
+}
+
+.stage[data-stage-theme="dark"] .stage-meta {
+  color: #7d8288;
+  border-top-color: #2a2a2a;
+  background: #0b0b0b;
+}
+
+.stage-meta b { font-weight: 600; color: var(--ink-2); }
+.stage[data-stage-theme="dark"] .stage-meta b { color: #cfd3d7; }
+
+.code-box {
+  border: 1px solid #2a2a2a;
+  border-radius: var(--radius);
+  background: #0b0b0b;
+  overflow: hidden;
+}
+
+/* ------------------------------------------------------------------ groups */
+
+.grp + .grp { margin-top: 22px; padding-top: 22px; border-top: 1px solid var(--line-2); }
+
+.grp-title {
+  margin: 0 0 12px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.field-row { display: flex; flex-wrap: wrap; gap: 16px 28px; }
+.field-row .field { flex: 1 1 220px; }
+.field-row .field--grow { flex: 2 1 260px; }
+.field-row .field + .field { margin-top: 0; padding-top: 0; border-top: 0; }
+
+/* Switch grid (Settings tab) */
+
+.sw-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px 24px;
+}
+
+.sw-grid .sw { padding: 0; }
+
+.link-row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; }
+.link-row .sw { flex: none; padding: 0; }
+.link-row .inp { flex: 1 1 220px; }
+
+/* Embed code panel */
+
+.embed-hd {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  border-bottom: 1px solid #2a2a2a;
+  background: #141414;
+}
+
+.embed-hd .hint { font-size: 12px; color: #9aa0a6; }
+.embed-hd .btn { padding: 6px 12px; font-size: 12px; }
+
+.embed-code {
+  display: block;
+  width: 100%;
+  resize: vertical;
+  padding: 14px;
+  border: 0;
+  background: transparent;
+  color: #d6d6d6;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 12px;
+  line-height: 1.6;
+  white-space: pre;
+  overflow-x: auto;
+}
+
+.embed-code:focus { outline: none; }
+
+.field + .field { margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--line-2); }
+
+.field-hd { display: flex; gap: 10px; align-items: baseline; justify-content: space-between; }
+
+.field label.lbl { display: block; margin-bottom: 6px; font-size: 13px; font-weight: 600; }
+.field .desc { margin: -3px 0 9px; font-size: 12px; line-height: 1.45; color: var(--ink-3); }
+.field .sw:first-of-type { padding-top: 2px; }
+.field #link-url { margin-top: 10px; }
+
+/* segmented control */
+
+.seg {
+  display: flex;
+  padding: 3px;
+  gap: 3px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: #f3f4f5;
+}
+
+.seg button {
+  flex: 1 1 0;
+  padding: 7px 10px;
+  border: 0;
+  border-radius: 6px;
+  font: inherit;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--ink-2);
+  background: transparent;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 140ms ease, color 140ms ease;
+}
+
+.seg button:hover { color: var(--ink); }
+
+.seg button[aria-pressed="true"] {
+  color: #fff;
+  background: var(--ink);
+  font-weight: 600;
+}
+
+/* switch row */
+
+.sw {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 9px 0;
+  cursor: pointer;
+}
+
+.sw + .sw { border-top: 1px solid var(--line-2); }
+.sw-grid .sw + .sw { border-top: 0; }
+
+.sw .t { font-size: 13px; font-weight: 600; }
+
+.sw input { position: absolute; opacity: 0; pointer-events: none; }
+
+.sw-ui {
+  position: relative;
+  flex: none;
+  width: 38px;
+  height: 22px;
+  margin-top: 1px;
+  border-radius: 999px;
+  background: #d3d6d9;
+  transition: background 160ms ease;
+}
+
+.sw-ui::after {
+  content: "";
+  position: absolute;
+  top: 2px; left: 2px;
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.28);
+  transition: transform 160ms ease;
+}
+
+.sw input:checked + .sw-ui { background: var(--accent); }
+.sw input:checked + .sw-ui::after { transform: translateX(16px); }
+.sw input:focus-visible + .sw-ui { outline: 2px solid var(--ink); outline-offset: 2px; }
+
+/* text + number inputs */
+
+.inp {
+  width: 100%;
+  padding: 9px 11px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  font: inherit;
+  font-size: 13px;
+  color: var(--ink);
+  background: #fff;
+}
+
+.inp:focus { outline: 2px solid var(--ink); outline-offset: -1px; border-color: var(--ink); }
+.inp:disabled { color: var(--ink-3); background: #f3f4f5; cursor: not-allowed; }
+.inp::placeholder { color: var(--ink-3); }
+
+.row { display: flex; gap: 10px; align-items: center; }
+.inp--n { width: 104px; flex: none; }
+
+/* No transition flash while the page wires itself up */
+.preload * { transition: none !important; }
+
+.btn {
+  padding: 9px 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  font: inherit;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--ink);
+  background: #fff;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.btn:hover { background: #f3f4f5; }
+.btn--ghost { border-color: transparent; background: transparent; color: var(--ink-2); padding: 4px 8px; }
+.btn--ghost:hover { color: var(--ink); background: #eceef0; }
+
+/* ------------------------------------------------------------------ tokens */
+
+.tok-hd {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+
+.tok-hd .grow { flex: 1 1 200px; min-width: 160px; }
+.tok-count { font-size: 12px; color: var(--ink-3); white-space: nowrap; }
+.tok-count b { color: var(--ink); font-weight: 600; }
+
+.tok-grid {
+  display: grid;
+  gap: 6px;
+  grid-template-columns: repeat(auto-fill, minmax(178px, 1fr));
+  max-height: 328px;
+  overflow-y: auto;
+  padding: 10px;
+  margin-top: 12px;
+  background: #f3f4f5;
+  border-radius: var(--radius);
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.tok-grid::-webkit-scrollbar { display: none; }
+
+.tok {
+  display: flex;
+  gap: 9px;
+  align-items: center;
+  padding: 7px 9px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: #fff;
+  cursor: pointer;
+  transition: border-color 120ms ease, background 120ms ease;
+}
+
+.tok:hover { border-color: #c9cdd1; background: #fafbfb; }
+
+.tok input { position: absolute; opacity: 0; pointer-events: none; }
+
+.tok-box {
+  position: relative;
+  flex: none;
+  width: 17px; height: 17px;
+  border: 1.5px solid #c4c8cc;
+  border-radius: 5px;
+  background: #fff;
+  transition: border-color 120ms ease, background 120ms ease;
+}
+
+.tok--radio .tok-box { border-radius: 50%; }
+
+.tok-box::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 11px 11px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath fill='none' stroke='%23fff' stroke-width='2.1' stroke-linecap='round' stroke-linejoin='round' d='M1.8 6.3 4.6 9.1 10.2 3'/%3E%3C/svg%3E");
+  transition: opacity 120ms ease;
+}
+
+.tok--radio .tok-box::after {
+  inset: 4.5px;
+  border-radius: 50%;
+  background: #fff;
+  background-image: none;
+}
+
+.tok input:checked + .tok-box { border-color: var(--accent); background: var(--accent); }
+.tok input:checked + .tok-box::after { opacity: 1; }
+.tok input:focus-visible + .tok-box { outline: 2px solid var(--ink); outline-offset: 2px; }
+.tok:has(input:checked) { border-color: var(--accent); background: #f2fbf2; }
+
+.tok-dot {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  font-size: 7.5px;
+  font-weight: 700;
+  letter-spacing: -0.2px;
+  color: #fff;
+  background: #999;
+  overflow: hidden;
+}
+
+.tok-dot img { display: block; width: 20px; height: 20px; }
+
+.tok-txt { min-width: 0; line-height: 1.25; }
+.tok-txt .s { display: block; font-size: 12.5px; font-weight: 600; }
+.tok-txt .n {
+  display: block;
+  font-size: 11px;
+  color: var(--ink-3);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tok-empty { padding: 22px 4px; font-size: 12.5px; color: var(--ink-3); }
+
+/* -------------------------------------------------------------------- misc */
+
+.note {
+  margin-top: 26px;
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--ink);
+  border-radius: 8px;
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: var(--ink-2);
+  background: #fff;
+}
+
+@media (max-width: 640px) {
+  .wrap { padding: 24px 16px 56px; }
+  .stage-inner { padding: 20px 12px; }
+  .preview-tools .hint { display: none; }
+}
+
+/* ===== embeddable widget stylesheet (copy this block into your site) ===== */
+/* ==========================================================================
+   Ozak AI — Market Signal Widgets
+   Self contained widget stylesheet. Every rule is scoped under `.ozw` so the
+   widget can never leak into, or be leaked into by, the host page.
+   Geometry, colour and type are taken 1:1 from the Figma source.
+   ========================================================================== */
+
+.ozw,
+.ozw *,
+.ozw *::before,
+.ozw *::after { box-sizing: border-box; }
+
+.ozw {
+  /* Light theme — Figma "Frame 1597881825" */
+  --ozw-bg:      #ffffff;
+  --ozw-bar:     #eaeaea;
+  --ozw-card:    #fcfcfc;
+  --ozw-line:    #e6e6e6;
+  --ozw-fg:      #000000;
+  --ozw-mut:     rgba(0, 0, 0, 0.5);
+  --ozw-up:      #32b232;
+  --ozw-down:    #ef4444;
+  --ozw-flat:    #6f7275;
+
+  --ozw-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+              "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+
+  /* Set by the runtime */
+  --ozw-shift: 0px;
+  --ozw-dur:   40s;
+
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  width: 100%;
+  margin: 0;
+  overflow: hidden;
+  font-family: var(--ozw-font);
+  font-weight: 400;
+  font-style: normal;
+  text-align: left;
+  color: var(--ozw-fg);
+  background: var(--ozw-bg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Dark theme — Figma "Frame 1597881826" */
+.ozw[data-ozw-theme="dark"] {
+  --ozw-bg:   #000000;
+  --ozw-bar:  #181818;
+  --ozw-card: #252525;
+  --ozw-line: rgba(255, 255, 255, 0.15);
+  --ozw-fg:   #ffffff;
+  --ozw-mut:  rgba(255, 255, 255, 0.5);
+  --ozw-flat: #9aa0a6;
+}
+
+/* Neutralise host page styles. `:where()` keeps the specificity at zero so
+   every layout rule below still wins without needing !important. */
+:where(.ozw) :where(p, span, div, a, svg, img) {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font: inherit;
+  letter-spacing: normal;
+  text-transform: none;
+  text-decoration: none;
+  color: inherit;
+  background: none;
+}
+
+.ozw a { color: inherit; text-decoration: none; }
+
+/* --------------------------------------------------------------------------
+   Marquee
+   The viewport carries a 16px left inset so the resting frame matches the
+   Figma artboard; clipping happens on the padding box, i.e. the widget edge,
+   which is why the trailing token sits cut off exactly as designed.
+   -------------------------------------------------------------------------- */
+
+.ozw-vp {
+  width: 100%;
+  overflow: hidden;
+  padding-left: 16px;
+}
+
+.ozw-track {
+  display: flex;
+  align-items: stretch;
+  width: max-content;
+  animation: ozw-run var(--ozw-dur) linear infinite;
+}
+
+.ozw-copy {
+  display: flex;
+  flex: none;
+  align-items: center;
+}
+
+@keyframes ozw-run {
+  from { transform: translate3d(0, 0, 0); }
+  to   { transform: translate3d(calc(-1 * var(--ozw-shift)), 0, 0); }
+}
+
+.ozw[data-ozw-pause="on"] .ozw-vp:hover .ozw-track { animation-play-state: paused; }
+.ozw[data-ozw-scroll="off"] .ozw-track { animation: none; }
+
+/* --------------------------------------------------------------------------
+   Shared atoms
+   -------------------------------------------------------------------------- */
+
+.ozw-ico {
+  position: relative;
+  flex: none;
+  display: block;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 22px 22px;
+}
+
+/* Monogram fallback for tokens without a bundled logo */
+.ozw-ico--mono {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 8.5px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.2px;
+  color: #ffffff;
+  text-transform: uppercase;
+}
+
+.ozw-sym {
+  flex: none;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.2;
+  white-space: nowrap;
+  color: var(--ozw-fg);
+}
+
+.ozw-price {
+  flex: none;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.2;
+  white-space: nowrap;
+  color: var(--ozw-fg);
+}
+
+.ozw-chg {
+  flex: none;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.ozw-pricegrp {
+  display: flex;
+  flex: none;
+  gap: 2px;
+  align-items: baseline;
+}
+
+.ozw-up   { color: var(--ozw-up); }
+.ozw-down { color: var(--ozw-down); }
+.ozw-flat { color: var(--ozw-flat); }
+
+/* Signal pill (widget 1) */
+.ozw-badge {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 6px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.2;
+  white-space: nowrap;
+  color: #ffffff;
+  background: var(--ozw-flat);
+}
+
+.ozw-badge--up   { background: var(--ozw-up); }
+.ozw-badge--down { background: var(--ozw-down); }
+
+/* Credit / footer bar */
+.ozw-foot {
+  display: flex;
+  flex: none;
+  gap: 16px;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 8px 16px;
+  overflow: hidden;
+  background: var(--ozw-bar);
+}
+
+.ozw-credit,
+.ozw-more {
+  display: flex;
+  flex: none;
+  align-items: center;
+}
+
+.ozw-credit { gap: 6px; }
+.ozw-more   { gap: 2px; }
+
+.ozw-credit-t,
+.ozw-more-t {
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.2;
+  white-space: nowrap;
+  color: var(--ozw-fg);
+}
+
+.ozw-mark {
+  flex: none;
+  display: block;
+  width: 15.164px;
+  height: 15.804px;
+  background-color: currentColor;
+  -webkit-mask-repeat: no-repeat;
+          mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+          mask-position: center;
+  -webkit-mask-size: 15.164px 15.804px;
+          mask-size: 15.164px 15.804px;
+}
+
+.ozw-arw {
+  flex: none;
+  display: block;
+  width: 14px;
+  height: 14px;
+  transform: rotate(90deg);
+  fill: currentColor;
+}
+
+/* Ozak AI's own token uses the brand mark as its glyph */
+.ozw-mark--sm {
+  width: 11px;
+  height: 11.46px;
+  -webkit-mask-size: 11px 11.46px;
+          mask-size: 11px 11.46px;
+}
+
+/* Very dark brand colours need a hairline so they read on the dark card */
+.ozw[data-ozw-theme="dark"] .ozw-ico--mono.is-dark {
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.28);
+}
+
+/* ==========================================================================
+   Widget 1 — Signals scroller with AI insight
+   ========================================================================== */
+
+.ozw1-strip { display: flex; align-items: center; height: 54px; }
+
+.ozw1-item {
+  display: flex;
+  flex: none;
+  gap: 8px;
+  align-items: center;
+  margin-right: 24px;
+  height: 22px;
+}
+
+.ozw1-id {
+  display: flex;
+  flex: none;
+  gap: 6px;
+  align-items: center;
+  height: 22px;
+}
+
+.ozw1-note {
+  display: flex;
+  flex: none;
+  gap: 16px;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 32px;
+  padding: 8px 16px;
+  overflow: hidden;
+  background: var(--ozw-bar);
+}
+
+.ozw1-note-l {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+}
+
+.ozw-spark {
+  flex: none;
+  display: block;
+  width: 11.612px;
+  height: 12.725px;
+  fill: currentColor;
+  fill-opacity: 0.7;
+}
+
+.ozw1-note-t {
+  min-width: 0;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: normal;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--ozw-fg);
+  transition: opacity 320ms ease;
+}
+
+.ozw1-note-t[data-ozw-fade="out"] { opacity: 0; }
+
+/* ==========================================================================
+   Widgets 2 & 3 — Signal cards
+   ========================================================================== */
+
+.ozw2-strip { padding-top: 16px; padding-bottom: 16px; }
+
+.ozw-card {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-between;
+  width: 240px;
+  height: 128px;
+  padding: 12px;
+  margin-right: 12px;
+  border: 1px solid var(--ozw-line);
+  border-radius: 10px;
+  background: var(--ozw-card);
+}
+
+/* Insight hidden — the card closes up instead of leaving a hole */
+.ozw-card--short {
+  height: auto;
+  gap: 14.4px;
+  justify-content: flex-start;
+}
+
+.ozw-card-top {
+  display: flex;
+  gap: 8px;
+  align-items: flex-end;
+  justify-content: space-between;
+  width: 100%;
+  min-height: 22px;
+}
+
+.ozw-card-id {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  min-width: 0;
+  height: 22px;
+}
+
+.ozw-name {
+  min-width: 0;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--ozw-mut);
+}
+
+.ozw-period {
+  flex: none;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.2;
+  white-space: nowrap;
+  color: var(--ozw-mut);
+}
+
+.ozw-card-mid {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  justify-content: space-between;
+  width: 100%;
+  min-height: 19.2px;
+}
+
+.ozw-signal {
+  flex: none;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.2;
+  white-space: nowrap;
+  color: var(--ozw-flat);
+}
+
+.ozw-signal--up   { color: var(--ozw-up); }
+.ozw-signal--down { color: var(--ozw-down); }
+
+.ozw-insight {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  width: 100%;
+  height: 34px;
+  overflow: hidden;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 17px;
+  color: var(--ozw-fg);
+}
+
+/* ==========================================================================
+   Widget 3 — Single signal card
+   ========================================================================== */
+
+.ozw3-body { padding: 16px; }
+
+.ozw3-body .ozw-card {
+  width: 100%;
+  margin-right: 0;
+}
+
+/* --------------------------------------------------------------------------
+   Interactive variant (Where taps go)
+   -------------------------------------------------------------------------- */
+
+.ozw[data-ozw-link="on"] .ozw1-item,
+.ozw[data-ozw-link="on"] .ozw-card { cursor: pointer; }
+
+.ozw[data-ozw-link="on"] .ozw-card { transition: border-color 160ms ease; }
+.ozw[data-ozw-link="on"] .ozw-card:hover { border-color: var(--ozw-mut); }
+
+.ozw-credit:hover .ozw-credit-t,
+.ozw-more:hover .ozw-more-t { text-decoration: underline; }
+
+/* --------------------------------------------------------------------------
+   Narrow widgets — measured against the widget itself, not the viewport, so a
+   320px widget behaves the same inside a wide page as it does on a phone.
+   -------------------------------------------------------------------------- */
+
+.ozw { container-type: inline-size; }
+
+@container (max-width: 400px) {
+  .ozw1-note { gap: 10px; }
+  .ozw-foot  { gap: 10px; }
+  .ozw1-note .ozw-credit .ozw-arw { display: none; }
+}
+
+@media (max-width: 400px) {
+  .ozw1-note { gap: 10px; }
+  .ozw-foot  { gap: 10px; }
+}
+
+/* Ozak AI brand mark, inlined so the widget makes no network requests */
+.ozw-mark { -webkit-mask-image: url("data:image/png;base64,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"); mask-image: url("data:image/png;base64,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"); }
+
+</style>
+</head>
+<body class="preload">
+
+<main class="wrap">
+  <section class="preview">
+    <div class="section-bar">
+      <h2>Preview</h2>
+      <div class="preview-tools">
+        <span class="hint" id="preview-hint">Live — every change below applies instantly</span>
+        <div class="seg" id="view-toggle">
+          <button type="button" data-view="preview" aria-pressed="true">Preview</button>
+          <button type="button" data-view="code" aria-pressed="false">Code</button>
+        </div>
+      </div>
+    </div>
+    <div class="stage" id="stage" data-stage-theme="light">
+      <div class="stage-inner">
+        <div class="stage-hold" id="stage-hold">
+          <div class="ozw" id="ozw-root"></div>
+        </div>
+      </div>
+      <div class="stage-meta">
+        <span><b id="meta-width">Full width</b> · <b id="meta-theme">Light</b></span>
+        <span><b id="meta-period">1 hour</b> view</span>
+      </div>
+    </div>
+    <div class="code-box" id="stage-code" hidden>
+      <div class="embed-hd">
+        <span class="hint">Paste anywhere on your page — updates live as you change settings</span>
+        <button class="btn" type="button" id="embed-copy">Copy code</button>
+      </div>
+      <textarea class="embed-code" id="embed-code" rows="4" readonly spellcheck="false"></textarea>
+    </div>
+  </section>
+
+  <section class="config">
+    <div class="section-bar">
+      <h2>Settings</h2>
+      <button class="btn" type="button" id="reset">Reset to defaults</button>
+    </div>
+
+    <div class="grp">
+      <h4 class="grp-title">Appearance</h4>
+      <div class="field-row">
+        <div class="field">
+          <label class="lbl">Theme</label>
+          <div class="seg" data-seg="theme">
+            <button type="button" data-val="light">Light</button>
+            <button type="button" data-val="dark">Dark</button>
+          </div>
+        </div>
+        <div class="field">
+          <label class="lbl">Width</label>
+          <div class="seg" data-seg="width">
+            <button type="button" data-val="full">Full width</button>
+            <button type="button" data-val="480">480px</button>
+            <button type="button" data-val="320">320px</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grp">
+      <h4 class="grp-title">Elements</h4>
+      <div class="sw-grid">
+        <label class="sw"><span class="t">Price</span><input type="checkbox" data-sw="price"><span class="sw-ui"></span></label>
+        <label class="sw"><span class="t">Rate of change</span><input type="checkbox" data-sw="change"><span class="sw-ui"></span></label>
+        <label class="sw"><span class="t">Signal</span><input type="checkbox" data-sw="signal"><span class="sw-ui"></span></label>
+        <label class="sw"><span class="t">AI insight line</span><input type="checkbox" data-sw="insight"><span class="sw-ui"></span></label>
+        <label class="sw"><span class="t">Time period label</span><input type="checkbox" data-sw="periodLabel"><span class="sw-ui"></span></label>
+      </div>
+    </div>
+
+    <div class="grp">
+      <h4 class="grp-title">Behaviour</h4>
+      <div class="field-row">
+        <div class="field">
+          <label class="lbl">Time period</label>
+          <div class="seg" data-seg="period">
+            <button type="button" data-val="1h">1 hour</button>
+            <button type="button" data-val="24h">24 hours</button>
+          </div>
+        </div>
+        <div class="field">
+          <label class="lbl">Scroll speed</label>
+          <div class="seg" data-seg="speed">
+            <button type="button" data-val="slow">Slow</button>
+            <button type="button" data-val="medium">Medium</button>
+            <button type="button" data-val="fast">Fast</button>
+          </div>
+        </div>
+      </div>
+      <div class="field">
+        <label class="sw"><span class="t">Pause on hover</span><input type="checkbox" data-sw="pauseOnHover"><span class="sw-ui"></span></label>
+      </div>
+    </div>
+
+    <div class="grp">
+      <h4 class="grp-title">Token</h4>
+      <div class="tok-hd">
+        <input class="inp inp--n" id="top-n" type="number" min="1" max="50" placeholder="Top N" aria-label="Auto select the top N tokens, maximum 50">
+        <input class="inp grow" id="tok-search" type="search" placeholder="Search 50 supported tokens">
+        <button class="btn btn--ghost" type="button" id="tok-clear">Clear</button>
+        <span class="tok-count"><b id="meta-tokens">3 tokens</b> selected</span>
+      </div>
+      <div class="tok-grid" id="tok-grid"></div>
+    </div>
+  </section>
+</main>
+
+<script>
+var OZAK_TOKENS = [{"s":"BTC","n":"Bitcoin","c":"#f7931a","p":64000,"h1":{"ch":0.66,"sg":"bullish","in":"Breakout above range highs, funding neutral.","ln":"breakout holding above range highs, spot leading and funding still neutral"},"h24":{"ch":1.42,"sg":"bullish","in":"Higher lows into resistance, buyers in control.","ln":"printing higher lows into resistance with buyers still in control of the tape"}},{"s":"ETH","n":"Ethereum","c":"#627eea","p":1860,"h1":{"ch":2.11,"sg":"bullish","in":"Momentum expanding, perp skew now positive.","ln":"momentum expanding on rising volume, perp skew has flipped positive"},"h24":{"ch":3.04,"sg":"bullish","in":"Spot bid absorbing supply, open interest climbing.","ln":"spot bid absorbing supply while open interest climbs alongside price"}},{"s":"XRP","n":"XRP","c":"#111111","p":1.1,"h1":{"ch":2.1,"sg":"bearish","in":"Rejected at range highs, momentum cooling.","ln":"rejected at range highs and momentum is cooling across the shorter windows"},"h24":{"ch":-1.18,"sg":"bearish","in":"Distribution into strength, open interest unwinding.","ln":"showing distribution into strength as open interest unwinds"}},{"s":"SOL","n":"Solana","c":"#9945ff","p":184.32,"h1":{"ch":1.24,"sg":"bullish","in":"Spot bid absorbing supply, open interest climbing.","ln":"spot bid absorbing supply while open interest climbs alongside price"},"h24":{"ch":4.61,"sg":"bullish","in":"Volume favours green candles, dips bought fast.","ln":"volume concentrating on green candles and dips are being bought quickly"}},{"s":"BNB","n":"BNB","c":"#f0b90b","p":612.4,"h1":{"ch":-0.32,"sg":"neutral","in":"Compression building on light volume.","ln":"compression building on light volume, breakout direction still unresolved"},"h24":{"ch":0.94,"sg":"bullish","in":"Breakout above range highs, funding neutral.","ln":"breakout holding above range highs, spot leading and funding still neutral"}},{"s":"DOGE","n":"Dogecoin","c":"#c2a633","p":0.1642,"h1":{"ch":0.88,"sg":"bearish","in":"Bounce fading into resistance, sellers active.","ln":"bounce fading into resistance with sellers active on every push higher"},"h24":{"ch":-2.31,"sg":"bearish","in":"Rejected at range highs, momentum cooling.","ln":"rejected at range highs and momentum is cooling across the shorter windows"}},{"s":"ADA","n":"Cardano","c":"#0033ad","p":0.6231,"h1":{"ch":-0.51,"sg":"neutral","in":"Range bound, no directional edge yet.","ln":"range bound with no directional edge yet, waiting on a clean break"},"h24":{"ch":1.77,"sg":"bullish","in":"Higher lows into resistance, buyers in control.","ln":"printing higher lows into resistance with buyers still in control of the tape"}},{"s":"TRX","n":"TRON","c":"#ff060a","p":0.2418,"h1":{"ch":0.34,"sg":"neutral","in":"Compression building on light volume.","ln":"compression building on light volume, breakout direction still unresolved"},"h24":{"ch":0.61,"sg":"neutral","in":"Range bound, no directional edge yet.","ln":"range bound with no directional edge yet, waiting on a clean break"}},{"s":"TON","n":"Toncoin","c":"#0098ea","p":5.42,"h1":{"ch":1.96,"sg":"bullish","in":"Higher lows into resistance, buyers in control.","ln":"printing higher lows into resistance with buyers still in control of the tape"},"h24":{"ch":-0.84,"sg":"bearish","in":"Bounce fading into resistance, sellers active.","ln":"bounce fading into resistance with sellers active on every push higher"}},{"s":"AVAX","n":"Avalanche","c":"#e84142","p":32.18,"h1":{"ch":-1.42,"sg":"bearish","in":"Distribution into strength, open interest unwinding.","ln":"showing distribution into strength as open interest unwinds"},"h24":{"ch":-3.65,"sg":"bearish","in":"Lower highs while funding stays crowded long.","ln":"printing lower highs while funding stays crowded long into the move"}},{"s":"LINK","n":"Chainlink","c":"#2a5ada","p":17.94,"h1":{"ch":2.44,"sg":"bullish","in":"Reclaimed the range mid, short trend intact.","ln":"reclaimed the range mid and is holding it, the short term trend stays intact"},"h24":{"ch":5.12,"sg":"bullish","in":"Breakout above range highs, funding neutral.","ln":"breakout holding above range highs, spot leading and funding still neutral"}},{"s":"DOT","n":"Polkadot","c":"#e6007a","p":6.08,"h1":{"ch":-0.77,"sg":"bearish","in":"Lower highs while funding stays crowded long.","ln":"printing lower highs while funding stays crowded long into the move"},"h24":{"ch":-1.94,"sg":"neutral","in":"Compression building on light volume.","ln":"compression building on light volume, breakout direction still unresolved"}},{"s":"SHIB","n":"Shiba Inu","c":"#f00500","p":2.214e-05,"h1":{"ch":1.31,"sg":"neutral","in":"Range bound, no directional edge yet.","ln":"range bound with no directional edge yet, waiting on a clean break"},"h24":{"ch":-4.02,"sg":"bearish","in":"Distribution into strength, open interest unwinding.","ln":"showing distribution into strength as open interest unwinds"}},{"s":"BCH","n":"Bitcoin Cash","c":"#8dc351","p":452.6,"h1":{"ch":0.42,"sg":"neutral","in":"Compression building on light volume.","ln":"compression building on light volume, breakout direction still unresolved"},"h24":{"ch":2.18,"sg":"bullish","in":"Spot bid absorbing supply, open interest climbing.","ln":"spot bid absorbing supply while open interest climbs alongside price"}},{"s":"LTC","n":"Litecoin","c":"#345d9d","p":91.24,"h1":{"ch":0.19,"sg":"neutral","in":"Balanced two way flow, funding close to flat.","ln":"balanced two way flow with funding sitting close to flat"},"h24":{"ch":1.06,"sg":"neutral","in":"Compression building on light volume.","ln":"compression building on light volume, breakout direction still unresolved"}},{"s":"NEAR","n":"NEAR Protocol","c":"#00c08b","p":5.77,"h1":{"ch":3.02,"sg":"bullish","in":"Spot bid absorbing supply, open interest climbing.","ln":"spot bid absorbing supply while open interest climbs alongside price"},"h24":{"ch":6.44,"sg":"bullish","in":"Volume favours green candles, dips bought fast.","ln":"volume concentrating on green candles and dips are being bought quickly"}},{"s":"POL","n":"Polygon","c":"#6c00f6","p":0.4812,"h1":{"ch":-1.08,"sg":"bearish","in":"Lower highs while funding stays crowded long.","ln":"printing lower highs while funding stays crowded long into the move"},"h24":{"ch":-2.77,"sg":"bearish","in":"Support lost, the retest is failing so far.","ln":"lost support and the retest is failing so far, sellers defending the level"}},{"s":"UNI","n":"Uniswap","c":"#ff007a","p":9.86,"h1":{"ch":1.14,"sg":"bullish","in":"Volume favours green candles, dips bought fast.","ln":"volume concentrating on green candles and dips are being bought quickly"},"h24":{"ch":2.92,"sg":"bullish","in":"Momentum expanding, perp skew now positive.","ln":"momentum expanding on rising volume, perp skew has flipped positive"}},{"s":"ICP","n":"Internet Computer","c":"#29abe2","p":10.42,"h1":{"ch":-0.64,"sg":"neutral","in":"Range bound, no directional edge yet.","ln":"range bound with no directional edge yet, waiting on a clean break"},"h24":{"ch":0.38,"sg":"neutral","in":"Balanced two way flow, funding close to flat.","ln":"balanced two way flow with funding sitting close to flat"}},{"s":"APT","n":"Aptos","c":"#1b1b1b","p":8.94,"h1":{"ch":1.72,"sg":"bullish","in":"Momentum expanding, perp skew now positive.","ln":"momentum expanding on rising volume, perp skew has flipped positive"},"h24":{"ch":3.31,"sg":"bullish","in":"Spot bid absorbing supply, open interest climbing.","ln":"spot bid absorbing supply while open interest climbs alongside price"}},{"s":"ETC","n":"Ethereum Classic","c":"#328332","p":26.71,"h1":{"ch":0.28,"sg":"neutral","in":"Balanced two way flow, funding close to flat.","ln":"balanced two way flow with funding sitting close to flat"},"h24":{"ch":-0.92,"sg":"neutral","in":"Compression building on light volume.","ln":"compression building on light volume, breakout direction still unresolved"}},{"s":"XLM","n":"Stellar","c":"#08b5e5","p":0.2864,"h1":{"ch":2.86,"sg":"bullish","in":"Spot bid absorbing supply, open interest climbing.","ln":"spot bid absorbing supply while open interest climbs alongside price"},"h24":{"ch":4.18,"sg":"bullish","in":"Volume favours green candles, dips bought fast.","ln":"volume concentrating on green candles and dips are being bought quickly"}},{"s":"STX","n":"Stacks","c":"#5546ff","p":1.72,"h1":{"ch":-1.94,"sg":"bearish","in":"Rejected at range highs, momentum cooling.","ln":"rejected at range highs and momentum is cooling across the shorter windows"},"h24":{"ch":-5.06,"sg":"bearish","in":"Distribution into strength, open interest unwinding.","ln":"showing distribution into strength as open interest unwinds"}},{"s":"FIL","n":"Filecoin","c":"#0090ff","p":4.36,"h1":{"ch":0.71,"sg":"neutral","in":"Balanced two way flow, funding close to flat.","ln":"balanced two way flow with funding sitting close to flat"},"h24":{"ch":1.48,"sg":"bullish","in":"Momentum expanding, perp skew now positive.","ln":"momentum expanding on rising volume, perp skew has flipped positive"}},{"s":"ATOM","n":"Cosmos","c":"#2e3148","p":6.62,"h1":{"ch":-0.42,"sg":"neutral","in":"Range bound, no directional edge yet.","ln":"range bound with no directional edge yet, waiting on a clean break"},"h24":{"ch":-1.31,"sg":"bearish","in":"Lower highs while funding stays crowded long.","ln":"printing lower highs while funding stays crowded long into the move"}},{"s":"HBAR","n":"Hedera","c":"#2d2d2d","p":0.1874,"h1":{"ch":1.58,"sg":"bullish","in":"Momentum expanding, perp skew now positive.","ln":"momentum expanding on rising volume, perp skew has flipped positive"},"h24":{"ch":3.72,"sg":"bullish","in":"Spot bid absorbing supply, open interest climbing.","ln":"spot bid absorbing supply while open interest climbs alongside price"}},{"s":"IMX","n":"Immutable","c":"#131a2a","p":1.28,"h1":{"ch":-2.16,"sg":"bearish","in":"Lower highs while funding stays crowded long.","ln":"printing lower highs while funding stays crowded long into the move"},"h24":{"ch":-4.44,"sg":"bearish","in":"Support lost, the retest is failing so far.","ln":"lost support and the retest is failing so far, sellers defending the level"}},{"s":"ARB","n":"Arbitrum","c":"#12aaff","p":0.7218,"h1":{"ch":0.94,"sg":"bullish","in":"Spot bid absorbing supply, open interest climbing.","ln":"spot bid absorbing supply while open interest climbs alongside price"},"h24":{"ch":2.06,"sg":"bullish","in":"Volume favours green candles, dips bought fast.","ln":"volume concentrating on green candles and dips are being bought quickly"}},{"s":"VET","n":"VeChain","c":"#15bdff","p":0.0342,"h1":{"ch":0.22,"sg":"neutral","in":"Compression building on light volume.","ln":"compression building on light volume, breakout direction still unresolved"},"h24":{"ch":-0.68,"sg":"neutral","in":"Range bound, no directional edge yet.","ln":"range bound with no directional edge yet, waiting on a clean break"}},{"s":"MKR","n":"Maker","c":"#1aab9b","p":1482.0,"h1":{"ch":1.42,"sg":"bullish","in":"Volume favours green candles, dips bought fast.","ln":"volume concentrating on green candles and dips are being bought quickly"},"h24":{"ch":2.64,"sg":"bullish","in":"Momentum expanding, perp skew now positive.","ln":"momentum expanding on rising volume, perp skew has flipped positive"}},{"s":"OP","n":"Optimism","c":"#ff0420","p":1.64,"h1":{"ch":-1.28,"sg":"bearish","in":"Bounce fading into resistance, sellers active.","ln":"bounce fading into resistance with sellers active on every push higher"},"h24":{"ch":-3.18,"sg":"bearish","in":"Rejected at range highs, momentum cooling.","ln":"rejected at range highs and momentum is cooling across the shorter windows"}},{"s":"KAS","n":"Kaspa","c":"#4a938a","p":0.1128,"h1":{"ch":2.34,"sg":"bullish","in":"Momentum expanding, perp skew now positive.","ln":"momentum expanding on rising volume, perp skew has flipped positive"},"h24":{"ch":5.88,"sg":"bullish","in":"Spot bid absorbing supply, open interest climbing.","ln":"spot bid absorbing supply while open interest climbs alongside price"}},{"s":"INJ","n":"Injective","c":"#0082fa","p":21.46,"h1":{"ch":1.06,"sg":"bullish","in":"Higher lows into resistance, buyers in control.","ln":"printing higher lows into resistance with buyers still in control of the tape"},"h24":{"ch":0.44,"sg":"neutral","in":"Compression building on light volume.","ln":"compression building on light volume, breakout direction still unresolved"}},{"s":"GRT","n":"The Graph","c":"#6747ed","p":0.1642,"h1":{"ch":-0.88,"sg":"bearish","in":"Support lost, the retest is failing so far.","ln":"lost support and the retest is failing so far, sellers defending the level"},"h24":{"ch":-2.12,"sg":"bearish","in":"Bounce fading into resistance, sellers active.","ln":"bounce fading into resistance with sellers active on every push higher"}},{"s":"RENDER","n":"Render","c":"#ff4b00","p":6.94,"h1":{"ch":1.88,"sg":"bullish","in":"Reclaimed the range mid, short trend intact.","ln":"reclaimed the range mid and is holding it, the short term trend stays intact"},"h24":{"ch":4.26,"sg":"bullish","in":"Breakout above range highs, funding neutral.","ln":"breakout holding above range highs, spot leading and funding still neutral"}},{"s":"THETA","n":"Theta Network","c":"#2ab8e6","p":1.42,"h1":{"ch":0.34,"sg":"neutral","in":"Balanced two way flow, funding close to flat.","ln":"balanced two way flow with funding sitting close to flat"},"h24":{"ch":0.82,"sg":"neutral","in":"Compression building on light volume.","ln":"compression building on light volume, breakout direction still unresolved"}},{"s":"SUI","n":"Sui","c":"#4da2ff","p":3.28,"h1":{"ch":2.62,"sg":"bullish","in":"Breakout above range highs, funding neutral.","ln":"breakout holding above range highs, spot leading and funding still neutral"},"h24":{"ch":6.14,"sg":"bullish","in":"Higher lows into resistance, buyers in control.","ln":"printing higher lows into resistance with buyers still in control of the tape"}},{"s":"SEI","n":"Sei","c":"#9e1f19","p":0.4218,"h1":{"ch":-1.66,"sg":"bearish","in":"Rejected at range highs, momentum cooling.","ln":"rejected at range highs and momentum is cooling across the shorter windows"},"h24":{"ch":-3.94,"sg":"bearish","in":"Distribution into strength, open interest unwinding.","ln":"showing distribution into strength as open interest unwinds"}},{"s":"RUNE","n":"THORChain","c":"#00ccaa","p":4.08,"h1":{"ch":0.52,"sg":"neutral","in":"Balanced two way flow, funding close to flat.","ln":"balanced two way flow with funding sitting close to flat"},"h24":{"ch":1.22,"sg":"bullish","in":"Reclaimed the range mid, short trend intact.","ln":"reclaimed the range mid and is holding it, the short term trend stays intact"}},{"s":"AAVE","n":"Aave","c":"#b6509e","p":168.4,"h1":{"ch":1.34,"sg":"bullish","in":"Spot bid absorbing supply, open interest climbing.","ln":"spot bid absorbing supply while open interest climbs alongside price"},"h24":{"ch":3.48,"sg":"bullish","in":"Volume favours green candles, dips bought fast.","ln":"volume concentrating on green candles and dips are being bought quickly"}},{"s":"FLOW","n":"Flow","c":"#00c878","p":0.6428,"h1":{"ch":-0.94,"sg":"bearish","in":"Bounce fading into resistance, sellers active.","ln":"bounce fading into resistance with sellers active on every push higher"},"h24":{"ch":-2.58,"sg":"bearish","in":"Rejected at range highs, momentum cooling.","ln":"rejected at range highs and momentum is cooling across the shorter windows"}},{"s":"ALGO","n":"Algorand","c":"#1a1a1a","p":0.2146,"h1":{"ch":0.66,"sg":"neutral","in":"Balanced two way flow, funding close to flat.","ln":"balanced two way flow with funding sitting close to flat"},"h24":{"ch":1.84,"sg":"bullish","in":"Momentum expanding, perp skew now positive.","ln":"momentum expanding on rising volume, perp skew has flipped positive"}},{"s":"XTZ","n":"Tezos","c":"#2c7df7","p":0.8942,"h1":{"ch":-0.38,"sg":"neutral","in":"Range bound, no directional edge yet.","ln":"range bound with no directional edge yet, waiting on a clean break"},"h24":{"ch":-1.02,"sg":"neutral","in":"Balanced two way flow, funding close to flat.","ln":"balanced two way flow with funding sitting close to flat"}},{"s":"CRV","n":"Curve DAO","c":"#40649f","p":0.5316,"h1":{"ch":2.08,"sg":"bullish","in":"Momentum expanding, perp skew now positive.","ln":"momentum expanding on rising volume, perp skew has flipped positive"},"h24":{"ch":4.72,"sg":"bullish","in":"Spot bid absorbing supply, open interest climbing.","ln":"spot bid absorbing supply while open interest climbs alongside price"}},{"s":"SNX","n":"Synthetix","c":"#1e1a31","p":1.94,"h1":{"ch":-1.82,"sg":"bearish","in":"Distribution into strength, open interest unwinding.","ln":"showing distribution into strength as open interest unwinds"},"h24":{"ch":-4.16,"sg":"bearish","in":"Lower highs while funding stays crowded long.","ln":"printing lower highs while funding stays crowded long into the move"}},{"s":"CAKE","n":"PancakeSwap","c":"#d1884f","p":2.36,"h1":{"ch":0.44,"sg":"neutral","in":"Range bound, no directional edge yet.","ln":"range bound with no directional edge yet, waiting on a clean break"},"h24":{"ch":1.14,"sg":"neutral","in":"Balanced two way flow, funding close to flat.","ln":"balanced two way flow with funding sitting close to flat"}},{"s":"SAND","n":"The Sandbox","c":"#00adef","p":0.3428,"h1":{"ch":1.18,"sg":"bullish","in":"Reclaimed the range mid, short trend intact.","ln":"reclaimed the range mid and is holding it, the short term trend stays intact"},"h24":{"ch":2.86,"sg":"bullish","in":"Breakout above range highs, funding neutral.","ln":"breakout holding above range highs, spot leading and funding still neutral"}},{"s":"MANA","n":"Decentraland","c":"#ff2d55","p":0.3162,"h1":{"ch":-0.72,"sg":"bearish","in":"Rejected at range highs, momentum cooling.","ln":"rejected at range highs and momentum is cooling across the shorter windows"},"h24":{"ch":-1.88,"sg":"neutral","in":"Compression building on light volume.","ln":"compression building on light volume, breakout direction still unresolved"}},{"s":"PEPE","n":"Pepe","c":"#4b9e3f","p":1.042e-05,"h1":{"ch":3.44,"sg":"bullish","in":"Breakout above range highs, funding neutral.","ln":"breakout holding above range highs, spot leading and funding still neutral"},"h24":{"ch":8.06,"sg":"bullish","in":"Higher lows into resistance, buyers in control.","ln":"printing higher lows into resistance with buyers still in control of the tape"}},{"s":"OZ","n":"Ozak AI","c":"#000000","p":0.0142,"h1":{"ch":4.12,"sg":"bullish","in":"Momentum expanding, perp skew now positive.","ln":"momentum expanding on rising volume, perp skew has flipped positive"},"h24":{"ch":9.34,"sg":"bullish","in":"Spot bid absorbing supply, open interest climbing.","ln":"spot bid absorbing supply while open interest climbs alongside price"}}];
+
+var OZAK_LOGOS = {"BTC":"data:image/png;base64,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","XRP":"data:image/png;base64,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","ETH":{"light":"data:image/png;base64,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","dark":"data:image/png;base64,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"},"OZ":"mark"};
+
+/* ==========================================================================
+   Ozak AI — Market Signal Widgets runtime
+   No dependencies, no cookies, no network calls, no globals beyond OzakWidget.
+   ========================================================================== */
+var OzakWidget = (function () {
+  'use strict';
+
+  var SPEED_PX = { slow: 20, medium: 40, fast: 70 };          /* px per second */
+  var ROTATE_MS = { slow: 7000, medium: 5000, fast: 3500 };   /* insight line  */
+
+  var SIGNAL_LABEL = { bullish: 'Bullish', bearish: 'Bearish', neutral: 'Neutral' };
+  var SIGNAL_CLASS = { bullish: 'up', bearish: 'down', neutral: 'flat' };
+
+  var CREDIT_URL = 'https://ozak.ai';
+
+  /* ---------------------------------------------------------------- helpers */
+
+  function el(tag, cls, text) {
+    var n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (text != null) n.textContent = text;
+    return n;
+  }
+
+  function svg(markup) {
+    var wrap = document.createElement('div');
+    wrap.innerHTML = markup;
+    return wrap.firstElementChild;
+  }
+
+  function formatPrice(p) {
+    var opts;
+    if (p >= 1000)      opts = { minimumFractionDigits: 0, maximumFractionDigits: 0 };
+    else if (p >= 1)    opts = { minimumFractionDigits: 2, maximumFractionDigits: 2 };
+    else if (p >= 0.01) opts = { minimumFractionDigits: 4, maximumFractionDigits: 4 };
+    else                opts = { minimumFractionDigits: 8, maximumFractionDigits: 8 };
+    return '$' + p.toLocaleString('en-US', opts);
+  }
+
+  function formatChange(v) {
+    return (v >= 0 ? '+' : '-') + Math.abs(v).toFixed(2) + '%';
+  }
+
+  function changeClass(v) {
+    if (v > 0) return 'ozw-up';
+    if (v < 0) return 'ozw-down';
+    return 'ozw-flat';
+  }
+
+  function luminance(hex) {
+    var h = hex.replace('#', '');
+    if (h.length === 3) h = h[0] + h[0] + h[1] + h[1] + h[2] + h[2];
+    var r = parseInt(h.slice(0, 2), 16) / 255,
+        g = parseInt(h.slice(2, 4), 16) / 255,
+        b = parseInt(h.slice(4, 6), 16) / 255;
+    function f(c) { return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4); }
+    return 0.2126 * f(r) + 0.7152 * f(g) + 0.0722 * f(b);
+  }
+
+  /* ------------------------------------------------------------------ icons */
+
+  function iconFor(token, theme) {
+    var node = el('span', 'ozw-ico');
+    var art = OZAK_LOGOS[token.s];
+
+    if (typeof art === 'string') {
+      node.style.backgroundImage = 'url("' + art + '")';
+      return node;
+    }
+    if (art && art.light) {
+      node.style.backgroundImage = 'url("' + (theme === 'dark' ? art.dark : art.light) + '")';
+      return node;
+    }
+    if (art === 'mark') {                       /* Ozak AI's own token */
+      node.className = 'ozw-ico ozw-ico--mono is-dark';
+      node.style.background = token.c;
+      var m = el('span', 'ozw-mark ozw-mark--sm');
+      node.appendChild(m);
+      return node;
+    }
+
+    node.className = 'ozw-ico ozw-ico--mono' + (luminance(token.c) < 0.22 ? ' is-dark' : '');
+    node.style.background = token.c;
+    node.textContent = token.s.slice(0, 2);
+    return node;
+  }
+
+  /* --------------------------------------------------------------- fragments */
+
+  function priceGroup(token, quote, show) {
+    if (!show.price && !show.change) return null;
+    var g = el('div', 'ozw-pricegrp');
+    if (show.price)  g.appendChild(el('span', 'ozw-price', formatPrice(token.p)));
+    if (show.change) g.appendChild(el('span', 'ozw-chg ' + changeClass(quote.ch), formatChange(quote.ch)));
+    return g;
+  }
+
+  function creditNode() {
+    var a = el('a', 'ozw-credit');
+    a.href = CREDIT_URL;
+    a.target = '_blank';
+    a.rel = 'noopener noreferrer';
+    a.appendChild(el('span', 'ozw-mark'));
+    a.appendChild(el('span', 'ozw-credit-t', 'Powered by Ozak AI'));
+    return a;
+  }
+
+  function arrowNode() {
+    return svg('<svg class="ozw-arw" viewBox="0 0 14 14" aria-hidden="true" focusable="false">' +
+      '<path d="M7.58333 4.56633V11.6667H6.41667V4.56633L3.28767 7.69533L2.46283 6.8705L7 2.33333L11.5372 ' +
+      '6.8705L10.7123 7.69533L7.58333 4.56633Z"/></svg>');
+  }
+
+  function sparkNode() {
+    return svg('<svg class="ozw-spark" viewBox="0 0 11.6122 12.7251" aria-hidden="true" focusable="false">' +
+      '<path d="M4.09055 2.01133C4.43939 0.9905 5.84989 0.959583 6.26347 1.91858L6.29847 2.01192L6.76922 ' +
+      '3.38858C6.8771 3.7043 7.05144 3.99321 7.28047 4.23583C7.5095 4.47845 7.7879 4.66912 8.09689 ' +
+      '4.795L8.22347 4.84225L9.60014 5.31242C10.621 5.66125 10.6519 7.07175 9.69347 7.48533L9.60014 ' +
+      '7.52033L8.22347 7.99108C7.90764 8.09889 7.61862 8.2732 7.3759 8.50223C7.13318 8.73127 6.94241 ' +
+      '9.0097 6.81647 9.31875L6.76922 9.44475L6.29905 10.822C5.95022 11.8428 4.53972 11.8737 4.12672 ' +
+      '10.9153L4.09055 10.822L3.62039 9.44533C3.51258 9.12951 3.33827 8.84048 3.10924 8.59776C2.8802 ' +
+      '8.35504 2.60177 8.16427 2.29272 8.03833L2.16672 7.99108L0.790054 7.52092C-0.231363 7.17208 ' +
+      '-0.26228 5.76158 0.69672 5.34858L0.790054 5.31242L2.16672 4.84225C2.48244 4.73437 2.77135 ' +
+      '4.56003 3.01397 4.331C3.25658 4.10197 3.44726 3.82357 3.57314 3.51458L3.62039 3.38858L4.09055 ' +
+      '2.01133ZM9.86147 0C9.9706 0 10.0775 0.0306123 10.1701 0.0883584C10.2627 0.146104 10.3373 ' +
+      '0.228668 10.3853 0.326667L10.4133 0.394917L10.6175 0.993417L11.2166 1.19758C11.3259 1.23474 ' +
+      '11.4218 1.30353 11.492 1.39523C11.5623 1.48693 11.6037 1.59741 11.611 1.71268C11.6184 1.82795 ' +
+      '11.5914 1.94281 11.5334 2.04271C11.4755 2.14261 11.3891 2.22305 11.2854 2.27383L11.2166 ' +
+      '2.30183L10.6181 2.506L10.4139 3.10508C10.3767 3.21442 10.3078 3.31024 10.2161 3.38041C10.1244 ' +
+      '3.45058 10.0139 3.49194 9.89859 3.49925C9.78333 3.50656 9.66849 3.47949 9.56863 3.42147C9.46876 ' +
+      '3.36345 9.38837 3.27709 9.33764 3.17333L9.30964 3.10508L9.10547 2.50658L8.50639 2.30242C8.39702 ' +
+      '2.26526 8.30115 2.19647 8.23092 2.10477C8.16069 2.01307 8.11926 1.90259 8.11189 1.78732C8.10452 ' +
+      '1.67205 8.13153 1.55719 8.18951 1.45729C8.24749 1.35739 8.33381 1.27695 8.43755 1.22617L8.50639 ' +
+      '1.19817L9.10489 0.994L9.30905 0.394917C9.34839 0.279665 9.42281 0.179613 9.52187 ' +
+      '0.108791C9.62094 0.0379686 9.73969 0 9.86147 0Z"/></svg>');
+  }
+
+  /* ------------------------------------------------------------------ items */
+
+  function tickerItem(token, quote, cfg) {
+    var item = cfg.link ? el('a', 'ozw1-item') : el('div', 'ozw1-item');
+    if (cfg.link) { item.href = cfg.link; item.target = '_blank'; item.rel = 'noopener noreferrer'; }
+
+    var id = el('div', 'ozw1-id');
+    id.appendChild(iconFor(token, cfg.theme));
+    id.appendChild(el('span', 'ozw-sym', token.s));
+    if (cfg.show.signal) {
+      id.appendChild(el('span', 'ozw-badge ozw-badge--' + SIGNAL_CLASS[quote.sg], SIGNAL_LABEL[quote.sg]));
+    }
+    item.appendChild(id);
+
+    var pg = priceGroup(token, quote, cfg.show);
+    if (pg) item.appendChild(pg);
+    return item;
+  }
+
+  function signalCard(token, quote, cfg) {
+    var card = cfg.link ? el('a', 'ozw-card') : el('div', 'ozw-card');
+    if (cfg.link) { card.href = cfg.link; card.target = '_blank'; card.rel = 'noopener noreferrer'; }
+
+    var blocks = 0;
+
+    var top = el('div', 'ozw-card-top');
+    var id = el('div', 'ozw-card-id');
+    id.appendChild(iconFor(token, cfg.theme));
+    id.appendChild(el('span', 'ozw-sym', token.s));
+    id.appendChild(el('span', 'ozw-name', token.n));
+    top.appendChild(id);
+    if (cfg.show.period) top.appendChild(el('span', 'ozw-period', cfg.period));
+    card.appendChild(top);
+    blocks++;
+
+    if (cfg.show.price || cfg.show.change || cfg.show.signal) {
+      var mid = el('div', 'ozw-card-mid');
+      var pg = priceGroup(token, quote, cfg.show);
+      if (pg) mid.appendChild(pg);
+      else mid.appendChild(el('span'));
+      if (cfg.show.signal) {
+        mid.appendChild(el('span', 'ozw-signal ozw-signal--' + SIGNAL_CLASS[quote.sg], SIGNAL_LABEL[quote.sg]));
+      }
+      card.appendChild(mid);
+      blocks++;
+    }
+
+    if (cfg.show.insight) {
+      card.appendChild(el('div', 'ozw-insight', 'Insight: ' + quote['in']));
+      blocks++;
+    }
+
+    if (blocks < 3) card.className += ' ozw-card--short';
+    return card;
+  }
+
+  /* --------------------------------------------------------------- instance */
+
+  function Widget(root, cfg) {
+    this.root = root;
+    this.cfg = null;
+    this.vp = null;
+    this.track = null;
+    this.noteText = null;
+    this.rotateTimer = null;
+    this.rotateIndex = 0;
+    var self = this;
+
+    if (typeof ResizeObserver === 'function') {
+      this.ro = new ResizeObserver(function () { self.measure(); });
+      this.ro.observe(root);
+    } else {
+      window.addEventListener('resize', function () { self.measure(); });
+    }
+
+    this.update(cfg);
+  }
+
+  Widget.prototype.data = function () {
+    var cfg = this.cfg, out = [];
+    for (var i = 0; i < cfg.tokens.length; i++) {
+      var t = OZAK_TOKEN_INDEX[cfg.tokens[i]];
+      if (t) out.push({ t: t, q: cfg.period === '24h' ? t.h24 : t.h1 });
+    }
+    return out;
+  };
+
+  Widget.prototype.update = function (cfg) {
+    this.cfg = cfg;
+    var root = this.root;
+    var rows = this.data();
+
+    root.className = 'ozw ozw' + cfg.variant;
+    root.setAttribute('data-ozw-theme', cfg.theme);
+    root.setAttribute('data-ozw-pause', cfg.pauseOnHover ? 'on' : 'off');
+    root.setAttribute('data-ozw-link', cfg.link ? 'on' : 'off');
+    root.setAttribute('role', 'region');
+    root.setAttribute('aria-label', 'Ozak AI market signals');
+    root.style.maxWidth = (cfg.width && cfg.width !== 'full') ? cfg.width + 'px' : '';
+    root.innerHTML = '';
+
+    if (cfg.variant === 3) this.renderCard(rows);
+    else if (cfg.variant === 2) this.renderCards(rows);
+    else this.renderTicker(rows);
+
+    this.measure();
+    this.startRotation(rows);
+  };
+
+  Widget.prototype.renderTicker = function (rows) {
+    var cfg = this.cfg;
+
+    var vp = el('div', 'ozw-vp ozw1-strip');
+    var track = el('div', 'ozw-track');
+    var copy = el('div', 'ozw-copy');
+    for (var i = 0; i < rows.length; i++) copy.appendChild(tickerItem(rows[i].t, rows[i].q, cfg));
+    track.appendChild(copy);
+    vp.appendChild(track);
+    this.root.appendChild(vp);
+    this.vp = vp; this.track = track;
+
+    if (!cfg.show.insight) { this.noteText = null; return; }
+
+    var note = el('div', 'ozw1-note');
+    var left = el('div', 'ozw1-note-l');
+    left.appendChild(sparkNode());
+    var text = el('span', 'ozw1-note-t', rows.length ? rows[0].t.s + ' ' + rows[0].q.ln : '');
+    left.appendChild(text);
+    note.appendChild(left);
+
+    var credit = creditNode();
+    credit.appendChild(arrowNode());
+    note.appendChild(credit);
+
+    this.root.appendChild(note);
+    this.noteText = text;
+  };
+
+  Widget.prototype.renderCards = function (rows) {
+    var cfg = this.cfg;
+
+    var vp = el('div', 'ozw-vp ozw2-strip');
+    var track = el('div', 'ozw-track');
+    var copy = el('div', 'ozw-copy');
+    for (var i = 0; i < rows.length; i++) copy.appendChild(signalCard(rows[i].t, rows[i].q, cfg));
+    track.appendChild(copy);
+    vp.appendChild(track);
+    this.root.appendChild(vp);
+    this.vp = vp; this.track = track;
+    this.noteText = null;
+
+    this.root.appendChild(this.footer());
+  };
+
+  Widget.prototype.renderCard = function (rows) {
+    var body = el('div', 'ozw3-body');
+    if (rows.length) body.appendChild(signalCard(rows[0].t, rows[0].q, this.cfg));
+    this.root.appendChild(body);
+    this.root.appendChild(this.footer());
+    this.vp = null; this.track = null; this.noteText = null;
+  };
+
+  Widget.prototype.footer = function () {
+    var foot = el('div', 'ozw-foot');
+    foot.appendChild(creditNode());
+    var more = el('a', 'ozw-more');
+    more.href = CREDIT_URL;
+    more.target = '_blank';
+    more.rel = 'noopener noreferrer';
+    more.appendChild(el('span', 'ozw-more-t', 'Get more signals'));
+    more.appendChild(arrowNode());
+    foot.appendChild(more);
+    return foot;
+  };
+
+  /* Size the marquee: duplicate one copy until it spans the viewport, then
+     shift by exactly one copy width so the loop is invisible. */
+  Widget.prototype.measure = function () {
+    var track = this.track, vp = this.vp;
+    if (!track || !vp) return;
+
+    var first = track.firstElementChild;
+    if (!first) return;
+    while (track.children.length > 1) track.removeChild(track.lastElementChild);
+
+    var w = first.getBoundingClientRect().width;
+    if (w < 1) { this.root.setAttribute('data-ozw-scroll', 'off'); return; }
+
+    var need = Math.max(2, Math.ceil(vp.getBoundingClientRect().width / w) + 1);
+    for (var i = 1; i < need; i++) track.appendChild(first.cloneNode(true));
+
+    this.root.setAttribute('data-ozw-scroll', 'on');
+    this.root.style.setProperty('--ozw-shift', w + 'px');
+    this.root.style.setProperty('--ozw-dur', (w / (SPEED_PX[this.cfg.speed] || SPEED_PX.medium)) + 's');
+
+    track.style.animation = 'none';
+    void track.offsetWidth;
+    track.style.animation = '';
+  };
+
+  /* Widget 1's insight line steps through the selected tokens. */
+  Widget.prototype.startRotation = function (rows) {
+    if (this.rotateTimer) { clearInterval(this.rotateTimer); this.rotateTimer = null; }
+    if (!this.noteText || rows.length < 2) return;
+
+    var text = this.noteText, self = this;
+    this.rotateIndex = 0;
+
+    this.rotateTimer = setInterval(function () {
+      text.setAttribute('data-ozw-fade', 'out');
+      setTimeout(function () {
+        self.rotateIndex = (self.rotateIndex + 1) % rows.length;
+        var r = rows[self.rotateIndex];
+        text.textContent = r.t.s + ' ' + r.q.ln;
+        text.removeAttribute('data-ozw-fade');
+      }, 320);
+    }, ROTATE_MS[this.cfg.speed] || ROTATE_MS.medium);
+  };
+
+  Widget.prototype.destroy = function () {
+    if (this.rotateTimer) clearInterval(this.rotateTimer);
+    if (this.ro) this.ro.disconnect();
+    this.root.innerHTML = '';
+  };
+
+  /* ------------------------------------------------------------------- api */
+
+  var OZAK_TOKEN_INDEX = {};
+  function indexTokens() {
+    OZAK_TOKEN_INDEX = {};
+    for (var i = 0; i < OZAK_TOKENS.length; i++) OZAK_TOKEN_INDEX[OZAK_TOKENS[i].s] = OZAK_TOKENS[i];
+  }
+
+  return {
+    tokens: function () { return OZAK_TOKENS; },
+    mount: function (root, cfg) {
+      indexTokens();
+      return new Widget(root, cfg);
+    },
+    defaults: function (variant) {
+      return {
+        variant: variant,
+        theme: 'light',
+        /* a lone card reads best at a card width; the scrollers want the room */
+        width: variant === 3 ? '320' : 'full',
+        tokens: variant === 3 ? ['BTC'] : ['BTC', 'ETH', 'XRP'],
+        period: '1h',
+        speed: 'medium',
+        pauseOnHover: true,
+        link: '',
+        show: { price: true, change: true, signal: true, insight: true, period: true }
+      };
+    }
+  };
+})();
+var PAGE = { variant: 2 };
+/* ==========================================================================
+   Configurator behaviour. Reads PAGE (injected per widget) and drives the
+   live preview. Nothing here is part of the embeddable widget.
+   ========================================================================== */
+(function () {
+  'use strict';
+
+  var SINGLE = PAGE.variant === 3;
+  var MAX_TOKENS = 50;
+
+  var LABEL = {
+    theme:  { light: 'Light', dark: 'Dark' },
+    width:  { full: 'Full width', '480': '480px', '320': '320px' },
+    period: { '1h': '1 hour', '24h': '24 hours' },
+    speed:  { slow: 'Slow', medium: 'Medium', fast: 'Fast' }
+  };
+
+  var SHOW_KEY = {
+    price: 'price', change: 'change', signal: 'signal',
+    insight: 'insight', periodLabel: 'period'
+  };
+
+  var $  = function (s, r) { return (r || document).querySelector(s); };
+  var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
+
+  var tokens = OzakWidget.tokens();
+  var cfg = OzakWidget.defaults(PAGE.variant);
+  var baseline = JSON.parse(JSON.stringify(cfg));
+
+  var widget = OzakWidget.mount($('#ozw-root'), cfg);
+
+  /* ------------------------------------------------------------- rendering */
+
+  function apply() {
+    widget.update(cfg);
+    $('#stage').setAttribute('data-stage-theme', cfg.theme);
+    $('#stage-hold').style.maxWidth = cfg.width === 'full' ? '' : cfg.width + 'px';
+    $('#meta-width').textContent = LABEL.width[cfg.width];
+    $('#meta-theme').textContent = LABEL.theme[cfg.theme];
+    $('#meta-period').textContent = LABEL.period[cfg.period];
+    var count = $('#meta-tokens');
+    if (count) count.textContent = cfg.tokens.length + (cfg.tokens.length === 1 ? ' token' : ' tokens');
+    updateEmbedCode();
+  }
+
+  /* ------------------------------------------------------------- embed code */
+
+  function buildEmbedSnippet() {
+    var attrs = [
+      'theme="' + cfg.theme + '"',
+      'width="' + cfg.width + '"',
+      'tokens="' + cfg.tokens.join(',') + '"',
+      'period="' + cfg.period + '"',
+      'speed="' + cfg.speed + '"'
+    ];
+    if (cfg.link) attrs.push('link="' + cfg.link.replace(/"/g, '&quot;') + '"');
+    if (!cfg.pauseOnHover) attrs.push('no-pause');
+    if (!cfg.show.price) attrs.push('hide-price');
+    if (!cfg.show.change) attrs.push('hide-change');
+    if (!cfg.show.signal) attrs.push('hide-signal');
+    if (!cfg.show.insight) attrs.push('hide-insight');
+    if (!cfg.show.period) attrs.push('hide-period');
+
+    return '<script crossorigin="anonymous" async\n' +
+      '  src="https://cdn.ozak.ai/widgets/v1/ozw.js">' + '<' + '/script>\n' +
+      '<ozak-expanded-scroller\n  ' + attrs.join('\n  ') + '\n>' + '<' + '/ozak-expanded-scroller>';
+  }
+
+  function updateEmbedCode() {
+    var box = $('#embed-code');
+    if (!box) return;
+    box.value = buildEmbedSnippet();
+    box.style.height = 'auto';
+    box.style.height = box.scrollHeight + 'px';
+  }
+
+  function copyToClipboard(text, btn) {
+    function done(ok) {
+      if (!btn) return;
+      var original = btn.getAttribute('data-label') || btn.textContent;
+      btn.setAttribute('data-label', original);
+      btn.textContent = ok ? 'Copied!' : 'Press Ctrl/Cmd+C';
+      setTimeout(function () { btn.textContent = original; }, 1800);
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () { done(true); }, function () { done(false); });
+    } else {
+      done(false);
+    }
+  }
+
+  function syncControls() {
+    $$('[data-seg]').forEach(function (group) {
+      var key = group.getAttribute('data-seg');
+      $$('button', group).forEach(function (b) {
+        b.setAttribute('aria-pressed', String(b.getAttribute('data-val') === String(cfg[key])));
+      });
+    });
+
+    $$('[data-sw]').forEach(function (input) {
+      var key = input.getAttribute('data-sw');
+      if (key === 'pauseOnHover') input.checked = cfg.pauseOnHover;
+      else if (key === 'link') input.checked = !!cfg.link;
+      else input.checked = cfg.show[SHOW_KEY[key]];
+    });
+
+    var url = $('#link-url');
+    if (url) {
+      url.disabled = !$('[data-sw="link"]').checked;
+      if (cfg.link) url.value = cfg.link;
+    }
+    syncTokenInputs();
+  }
+
+  /* ---------------------------------------------------------------- tokens */
+
+  function tokenDot(t) {
+    var logo = OZAK_LOGOS[t.s];
+    var src = typeof logo === 'string' ? logo : (logo && logo.light) || null;
+    if (src) return '<span class="tok-dot"><img src="' + src + '" alt=""></span>';
+    return '<span class="tok-dot" style="background:' + t.c + '">' + t.s.slice(0, 2) + '</span>';
+  }
+
+  function buildTokenGrid() {
+    var grid = $('#tok-grid');
+    grid.innerHTML = tokens.map(function (t) {
+      return '<label class="tok' + (SINGLE ? ' tok--radio' : '') + '" data-token="' + t.s +
+        '" data-search="' + (t.s + ' ' + t.n).toLowerCase() + '">' +
+        '<input type="' + (SINGLE ? 'radio' : 'checkbox') + '" name="tok" value="' + t.s + '">' +
+        '<span class="tok-box"></span>' +
+        tokenDot(t) +
+        '<span class="tok-txt"><span class="s">' + t.s + '</span><span class="n">' + t.n + '</span></span>' +
+        '</label>';
+    }).join('') + '<p class="tok-empty" id="tok-empty" hidden>No token matches that search.</p>';
+
+    grid.addEventListener('change', function (e) {
+      if (!e.target.name || e.target.name !== 'tok') return;
+      if (SINGLE) {
+        cfg.tokens = [e.target.value];
+      } else {
+        var picked = $$('#tok-grid input:checked').map(function (i) { return i.value; });
+        if (!picked.length) { e.target.checked = true; return; }        /* keep at least one */
+        if (picked.length > MAX_TOKENS) { e.target.checked = false; return; }
+        cfg.tokens = tokens.filter(function (t) { return picked.indexOf(t.s) > -1; })
+                           .map(function (t) { return t.s; });
+      }
+      syncTopN();
+      apply();
+    });
+  }
+
+  function syncTokenInputs() {
+    $$('#tok-grid input').forEach(function (i) { i.checked = cfg.tokens.indexOf(i.value) > -1; });
+    syncTopN();
+  }
+
+  /* The "top N" field mirrors the selection whenever the selection happens to
+     be the first N of the list, and clears when it is a custom pick. */
+  function syncTopN() {
+    var field = $('#top-n');
+    if (!field) return;
+    var isPrefix = cfg.tokens.length > 0 && cfg.tokens.every(function (s, i) { return tokens[i].s === s; });
+    field.value = isPrefix ? cfg.tokens.length : '';
+  }
+
+  function filterTokens(q) {
+    q = q.trim().toLowerCase();
+    var shown = 0;
+    $$('#tok-grid .tok').forEach(function (row) {
+      var hit = !q || row.getAttribute('data-search').indexOf(q) > -1;
+      row.hidden = !hit;
+      if (hit) shown++;
+    });
+    $('#tok-empty').hidden = shown > 0;
+  }
+
+  /* -------------------------------------------------------------- bindings */
+
+  function bind() {
+    $$('[data-seg]').forEach(function (group) {
+      var key = group.getAttribute('data-seg');
+      group.addEventListener('click', function (e) {
+        var b = e.target.closest('button[data-val]');
+        if (!b) return;
+        cfg[key] = b.getAttribute('data-val');
+        syncControls();
+        apply();
+      });
+    });
+
+    $$('[data-sw]').forEach(function (input) {
+      var key = input.getAttribute('data-sw');
+      input.addEventListener('change', function () {
+        if (key === 'pauseOnHover') {
+          cfg.pauseOnHover = input.checked;
+        } else if (key === 'link') {
+          var url = $('#link-url');
+          url.disabled = !input.checked;
+          cfg.link = input.checked ? url.value.trim() : '';
+          if (input.checked) url.focus();
+        } else {
+          cfg.show[SHOW_KEY[key]] = input.checked;
+        }
+        apply();
+      });
+    });
+
+    var url = $('#link-url');
+    if (url) {
+      url.addEventListener('input', function () {
+        if ($('[data-sw="link"]').checked) { cfg.link = url.value.trim(); apply(); }
+      });
+    }
+
+    var topN = $('#top-n');
+    if (topN) {
+      topN.addEventListener('input', function () {
+        var n = parseInt(topN.value, 10);
+        if (isNaN(n)) return;
+        n = Math.max(1, Math.min(MAX_TOKENS, n));
+        cfg.tokens = tokens.slice(0, n).map(function (t) { return t.s; });
+        $$('#tok-grid input').forEach(function (i) { i.checked = cfg.tokens.indexOf(i.value) > -1; });
+        apply();
+      });
+      topN.addEventListener('blur', function () { syncTopN(); });
+    }
+
+    var search = $('#tok-search');
+    if (search) search.addEventListener('input', function () { filterTokens(search.value); });
+
+    var clear = $('#tok-clear');
+    if (clear) {
+      clear.addEventListener('click', function () {
+        cfg.tokens = [tokens[0].s];
+        syncTokenInputs();
+        apply();
+      });
+    }
+
+    $('#reset').addEventListener('click', function () {
+      cfg = JSON.parse(JSON.stringify(baseline));
+      if (search) { search.value = ''; filterTokens(''); }
+      syncControls();
+      apply();
+    });
+
+    var embedCode = $('#embed-code');
+    if (embedCode) embedCode.addEventListener('focus', function () { embedCode.select(); });
+
+    var embedCopy = $('#embed-copy');
+    if (embedCopy) {
+      embedCopy.addEventListener('click', function () {
+        embedCode.focus();
+        embedCode.select();
+        copyToClipboard(embedCode.value, embedCopy);
+      });
+    }
+
+    var viewToggle = $('#view-toggle');
+    if (viewToggle) {
+      viewToggle.addEventListener('click', function (e) {
+        var b = e.target.closest('button[data-view]');
+        if (!b) return;
+        setView(b.getAttribute('data-view'));
+      });
+    }
+  }
+
+  function setView(view) {
+    var isCode = view === 'code';
+    var stage = $('#stage');
+    var codeBox = $('#stage-code');
+
+    if (isCode) codeBox.style.minHeight = stage.offsetHeight + 'px';
+
+    stage.hidden = isCode;
+    codeBox.hidden = !isCode;
+    $$('#view-toggle button').forEach(function (b) {
+      b.setAttribute('aria-pressed', String(b.getAttribute('data-view') === view));
+    });
+    if (isCode) {
+      updateEmbedCode();
+      var box = $('#embed-code');
+      box.focus();
+      box.select();
+    }
+  }
+
+  buildTokenGrid();
+  bind();
+  syncControls();
+  apply();
+
+  requestAnimationFrame(function () {
+    requestAnimationFrame(function () { document.body.classList.remove('preload'); });
+  });
+})();
+</script>
+
+</body>
+</html>

@@ -115,6 +115,30 @@
       "document": "docs/Policies-.mdx",
       "label": "Policies",
       "_template": "doc"
+    },
+    {
+      "title": "Widgets",
+      "link": "doc",
+      "docLink": "docs/Widgets/Welcome-to-Widgets.mdx",
+      "label": "Widgets",
+      "items": [
+        {
+          "document": "docs/Widgets/Signals-Scroller.mdx",
+          "label": "Signals Scroller",
+          "_template": "doc"
+        },
+        {
+          "document": "docs/Widgets/Expanded-Signal-Scroller.mdx",
+          "label": "Expanded Signal Scroller",
+          "_template": "doc"
+        },
+        {
+          "document": "docs/Widgets/Single-Signal-Card.mdx",
+          "label": "Single Signal Card",
+          "_template": "doc"
+        }
+      ],
+      "_template": "category"
     }
   ]
 }
