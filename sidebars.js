@@ -8,7 +8,11 @@ const getDocId = (doc) => {
     .join("/");
 };
 
-const getItem = (item) => {
+// depth is tracked so top-level categories can render as section labels rather
+// than collapsible groups. Tina's sidebar schema has no `html` item type, so the
+// mono section headings in the design are expressed as depth-0 categories with
+// link "none" - see the block at the bottom of getItem().
+const getItem = (item, depth = 0) => {
   const type = item["_template"];
 
   let itemProps = {
@@ -47,9 +51,17 @@ const getItem = (item) => {
       }
     }
 
-    itemProps.items = item.items.flatMap((item) => {
-      return getItem(item);
+    itemProps.items = item.items.flatMap((child) => {
+      return getItem(child, depth + 1);
     });
+
+    // Section label: a top-level category with no link. Always open, not
+    // collapsible, and tagged so custom.css can render it as a mono heading.
+    if (depth === 0 && (!item.link || item.link === "none")) {
+      itemProps.collapsible = false;
+      itemProps.collapsed = false;
+      itemProps.className = "oz-navgroup-cat";
+    }
   }
 
   if (type === "link") {

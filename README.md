@@ -3,16 +3,12 @@
 ## Quickstart With Tina
 
 ```
-$ npm install && npm run dev
-```
-
-Or
-
-```
-$ yarn && yarn dev
+$ bun install && bun run dev
 ```
 
 This will install dependencies and open the website in your browser.
+
+> This project uses [bun](https://bun.sh/) as its package manager. `bun.lock` is the only lockfile committed — please don't run `npm`, `yarn`, or `pnpm` here, as they'll generate a competing lockfile.
 
 Visit the CMS at [http://localhost:3000/admin](http://localhost:3000/admin) to start editing.
 
@@ -25,25 +21,13 @@ This website is built using [Docusaurus 3](https://docusaurus.io/) and [TinaCMS]
 ### Installation
 
 ```
-$ npm install
-```
-
-Or
-
-```
-$ yarn
+$ bun install
 ```
 
 ### Local Development
 
 ```
-$ npm run dev
-```
-
-Or
-
-```
-$ yarn dev
+$ bun run dev
 ```
 
 This command starts a local development server and opens up a browser window. Most changes are reflected live without having to restart the server. Go to the [Tina Admin](http://localhost:3000/admin) to start editing.
@@ -51,13 +35,7 @@ This command starts a local development server and opens up a browser window. Mo
 ### Build
 
 ```
-$ npm run build
-```
-
-Or
-
-```
-$ yarn build
+$ bun run build
 ```
 
 This command generates static content into the `build` directory and can be served using any static contents hosting service.
