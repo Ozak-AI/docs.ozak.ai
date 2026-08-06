@@ -2,47 +2,124 @@
   "label": "Docs Sidebar",
   "items": [
     {
-      "document": "docs/Welcome-to-Ozak-AI.mdx",
-      "label": "Getting Started",
-      "_template": "doc"
-    },
-    {
-      "document": "docs/The-Ozak-AI-Ecosystem-Our-Products.mdx",
-      "label": "Ecosystem",
+      "document": "docs/index.mdx",
+      "label": "Welcome",
       "_template": "doc"
     },
     {
       "title": "Eon",
-      "link": "doc",
-      "docLink": "docs/EON/Welcome-to-Eon.mdx",
+      "link": "none",
       "items": [
         {
-          "document": "docs/EON/Access--Security.mdx",
-          "label": "Access & Security",
+          "document": "docs/eon/index.mdx",
+          "label": "What Is Eon",
           "_template": "doc"
         },
         {
-          "document": "docs/EON/The-Home-Page-Your-HQ.mdx",
-          "label": "The Home Page (Your HQ)",
+          "document": "docs/eon/getting-started.mdx",
+          "label": "Getting Started",
           "_template": "doc"
         },
         {
-          "document": "docs/EON/The-Explore-Menu-Analysis-Tools.mdx",
-          "label": "The Explore Menu (Analysis Tools)",
+          "document": "docs/eon/home.mdx",
+          "label": "Home",
           "_template": "doc"
         },
         {
-          "document": "docs/EON/Threads-Managing-Intelligence.mdx",
-          "label": "Threads (Managing Intelligence)",
+          "document": "docs/eon/discover.mdx",
+          "label": "Discover",
           "_template": "doc"
         },
         {
-          "document": "docs/EON/Credits--Account.mdx",
-          "label": "Credits & Account",
+          "document": "docs/eon/screener.mdx",
+          "label": "Screener",
           "_template": "doc"
         },
         {
-          "document": "docs/EON/FAQs--Troubleshooting.mdx",
+          "title": "Explore",
+          "link": "doc",
+          "docLink": "docs/eon/explore/index.mdx",
+          "items": [
+            {
+              "document": "docs/eon/explore/market-overview.mdx",
+              "label": "Market Overview",
+              "_template": "doc"
+            },
+            {
+              "document": "docs/eon/explore/fundamental.mdx",
+              "label": "Fundamental Analysis",
+              "_template": "doc"
+            },
+            {
+              "document": "docs/eon/explore/technical.mdx",
+              "label": "Technical Analysis",
+              "_template": "doc"
+            },
+            {
+              "document": "docs/eon/explore/calendars.mdx",
+              "label": "Calendars",
+              "_template": "doc"
+            },
+            {
+              "document": "docs/eon/explore/token-unlocks.mdx",
+              "label": "Token Unlocks",
+              "_template": "doc"
+            },
+            {
+              "document": "docs/eon/explore/news.mdx",
+              "label": "News & Sentiment",
+              "_template": "doc"
+            },
+            {
+              "document": "docs/eon/explore/whale-tracking.mdx",
+              "label": "Whale Tracking",
+              "_template": "doc"
+            },
+            {
+              "document": "docs/eon/explore/derivatives.mdx",
+              "label": "Derivatives",
+              "_template": "doc"
+            },
+            {
+              "document": "docs/eon/explore/defi-lending.mdx",
+              "label": "DeFi Lending",
+              "_template": "doc"
+            },
+            {
+              "document": "docs/eon/explore/economics.mdx",
+              "label": "Economics",
+              "_template": "doc"
+            }
+          ],
+          "_template": "category"
+        },
+        {
+          "document": "docs/eon/signals.mdx",
+          "label": "Signals",
+          "_template": "doc"
+        },
+        {
+          "document": "docs/eon/portfolio.mdx",
+          "label": "Portfolio",
+          "_template": "doc"
+        },
+        {
+          "document": "docs/eon/trading.mdx",
+          "label": "Trading",
+          "_template": "doc"
+        },
+        {
+          "document": "docs/eon/threads.mdx",
+          "label": "Threads",
+          "_template": "doc"
+        },
+        {
+          "document": "docs/eon/credits-and-plans.mdx",
+          "label": "Credits & Plans",
+          "_template": "doc"
+        },
+        {
+          "document": "docs/eon/faqs.mdx",
           "label": "FAQs & Troubleshooting",
           "_template": "doc"
         }
@@ -50,91 +127,111 @@
       "_template": "category"
     },
     {
-      "document": "docs/Ozak-AI-Architecture.mdx",
-      "label": "Architecture",
-      "_template": "doc"
-    },
-    {
-      "document": "docs/The-OZ-Token.mdx",
-      "label": "The $OZ Token",
-      "_template": "doc"
-    },
-    {
-      "title": "User Guides",
-      "link": "generated",
+      "title": "Platform",
+      "link": "none",
       "items": [
         {
-          "document": "docs/How-to-Acquire-OZ-Tokens.mdx",
-          "label": "How to Acquire $OZ Tokens",
+          "document": "docs/architecture.mdx",
+          "label": "How It Works",
           "_template": "doc"
         },
         {
-          "document": "docs/Cant-find-your-OZ-tokens.mdx",
-          "label": "Can't find your $OZ tokens?",
+          "title": "Widgets",
+          "link": "doc",
+          "docLink": "docs/widgets/index.mdx",
+          "items": [
+            {
+              "document": "docs/widgets/signals-scroller.mdx",
+              "label": "Signals Scroller",
+              "_template": "doc"
+            },
+            {
+              "document": "docs/widgets/expanded-signal-scroller.mdx",
+              "label": "Expanded Signal Scroller",
+              "_template": "doc"
+            },
+            {
+              "document": "docs/widgets/single-signal-card.mdx",
+              "label": "Single Signal Card",
+              "_template": "doc"
+            }
+          ],
+          "_template": "category"
+        }
+      ],
+      "_template": "category"
+    },
+    {
+      "title": "$OZ & Presale",
+      "link": "none",
+      "items": [
+        {
+          "document": "docs/token.mdx",
+          "label": "The $OZ Token",
           "_template": "doc"
         },
         {
-          "document": "docs/OZ-Referral-System.mdx",
-          "label": "$OZ Referral System",
+          "document": "docs/guides/buy-oz.mdx",
+          "label": "How to Buy $OZ",
           "_template": "doc"
         },
         {
-          "document": "docs/How-to-Earn-Even-More-OZ.mdx",
-          "label": "How to Earn Even More $OZ",
+          "document": "docs/guides/find-your-tokens.mdx",
+          "label": "Can't Find Your $OZ",
           "_template": "doc"
         },
         {
-          "document": "docs/Ozak-AI-Rewards-Hub.mdx",
-          "label": "Ozak AI Rewards Hub",
+          "document": "docs/guides/referrals.mdx",
+          "label": "Referral System",
           "_template": "doc"
         },
         {
-          "document": "docs/Ozak-AI-Ranking-System-.mdx",
-          "label": "Ozak AI Ranking System ",
+          "document": "docs/guides/rewards-and-ranks.mdx",
+          "label": "Rewards & Ranks",
           "_template": "doc"
         }
       ],
       "_template": "category"
     },
     {
-      "document": "docs/Contract-Audits.mdx",
-      "label": "Security",
-      "_template": "doc"
-    },
-    {
-      "document": "docs/FAQs-and-Community.mdx",
-      "label": "FAQs and Community",
-      "_template": "doc"
-    },
-    {
-      "document": "docs/brand-assets.mdx",
-      "label": "Brand Assets",
-      "_template": "doc"
-    },
-    {
-      "document": "docs/Policies-.mdx",
-      "label": "Policies",
-      "_template": "doc"
-    },
-    {
-      "title": "Widgets",
-      "link": "doc",
-      "docLink": "docs/Widgets/Welcome-to-Widgets.mdx",
-      "label": "Widgets",
+      "title": "Trust & Safety",
+      "link": "none",
       "items": [
         {
-          "document": "docs/Widgets/Signals-Scroller.mdx",
-          "label": "Signals Scroller",
+          "document": "docs/security.mdx",
+          "label": "Security & Trust",
           "_template": "doc"
         },
         {
-          "document": "docs/Widgets/Expanded-Signal-Scroller.mdx",
-          "label": "Expanded Signal Scroller",
+          "document": "docs/audits.mdx",
+          "label": "Contract Audits",
           "_template": "doc"
         },
         {
-          "document": "docs/Widgets/Single-Signal-Card.mdx",
-          "label": "Single Signal Card",
+          "document": "docs/policies.mdx",
+          "label": "Policies",
+          "_template": "doc"
+        }
+      ],
+      "_template": "category"
+    },
+    {
+      "title": "Resources",
+      "link": "none",
+      "items": [
+        {
+          "document": "docs/affiliate-program.mdx",
+          "label": "Affiliate Program",
+          "_template": "doc"
+        },
+        {
+          "document": "docs/brand-assets.mdx",
+          "label": "Brand Assets",
+          "_template": "doc"
+        },
+        {
+          "document": "docs/faqs.mdx",
+          "label": "FAQs & Community",
           "_template": "doc"
         }
       ],

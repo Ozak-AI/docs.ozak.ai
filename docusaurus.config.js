@@ -23,6 +23,20 @@ const getPath = (page) => {
   return page.replace(/\.mdx?$/, "");
 };
 
+// Tina stores an internal footer link as a document path ("docs/eon/index.mdx").
+// Docs are served at the site root here (routeBasePath: "/"), so the stored path
+// has to be converted to a route: drop the leading "docs" segment and any
+// trailing "index".
+//   docs/index.mdx           -> /
+//   docs/eon/index.mdx       -> /eon
+//   docs/guides/buy-oz.mdx   -> /guides/buy-oz
+const getDocRoute = (doc) => {
+  const parts = doc.replace(/\.mdx?$/, "").split("/");
+  if (parts[0] === "docs") parts.shift();
+  if (parts[parts.length - 1] === "index") parts.pop();
+  return "/" + parts.join("/");
+};
+
 const formatFooterItem = (item) => {
   if (item.title) {
     return {
@@ -37,7 +51,7 @@ const formatFooterItem = (item) => {
     };
 
     if (item.to) {
-      linkObject.to = getPath(item.to);
+      linkObject.to = getDocRoute(item.to);
     } else if (item.href) {
       linkObject.href = item.href;
     } else {
@@ -138,15 +152,51 @@ const config = {
             ? docusaurusData?.logo?.src
             : "img/logo.svg",
         },
-        items: docusaurusData.navbar.map((item) => {
-          return formatNavbarItem(item);
-        }),
+        items: [
+          // Section tabs. Defined here rather than in the Tina config because
+          // each one needs an activeBaseRegex so that exactly one tab is
+          // highlighted per page.
+          //
+          // A Tina `doc` item compiles to { type: 'doc', docId }, which
+          // Docusaurus highlights based on sidebar membership rather than the
+          // current path. Every page belongs to `tutorialSidebar`, so that form
+          // would mark all three as active everywhere.
+          //
+          // activeBaseRegex has no equivalent field in formatNavbarItem or in
+          // Tina's NavbarItemFields schema, and unknown fields are not preserved
+          // when the navbar is saved through the CMS. Keeping these three here
+          // means their labels and order are not CMS-editable, which suits
+          // structural navigation.
+          {
+            to: "/",
+            label: "Docs",
+            position: "left",
+            // Everything that is not an Eon or $OZ page, including the root.
+            activeBaseRegex: "^/(?!eon\\b|token\\b|guides\\b)",
+          },
+          {
+            to: "/eon/",
+            label: "Eon",
+            position: "left",
+            activeBaseRegex: "^/eon\\b",
+          },
+          {
+            to: "/token",
+            label: "$OZ",
+            position: "left",
+            // /token plus the presale guides, which sit in the same section.
+            activeBaseRegex: "^/(token|guides)\\b",
+          },
+          ...(docusaurusData.navbar || []).map((item) => {
+            return formatNavbarItem(item);
+          }),
+        ],
       },
       footer: {
         style: docusaurusData.footer?.style || "dark",
-        // links: docusaurusData.footer?.links.map((item) => {
-        //   return formatFooterItem(item);
-        // }),
+        links: (docusaurusData.footer?.links || []).map((item) => {
+          return formatFooterItem(item);
+        }),
         copyright:
           `Copyright © ${new Date().getFullYear()} ` +
           (docusaurusData.footer?.copyright || docusaurusData.title),
