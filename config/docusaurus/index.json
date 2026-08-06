@@ -19,7 +19,104 @@
     "style": "dark",
     "links": [
       {
-        "title": "Docs"
+        "title": "Product",
+        "items": [
+          {
+            "label": "What Is Eon",
+            "to": "docs/eon/index.mdx",
+            "_template": "internal"
+          },
+          {
+            "label": "Getting Started",
+            "to": "docs/eon/getting-started.mdx",
+            "_template": "internal"
+          },
+          {
+            "label": "Credits & Plans",
+            "to": "docs/eon/credits-and-plans.mdx",
+            "_template": "internal"
+          },
+          {
+            "label": "How It Works",
+            "to": "docs/architecture.mdx",
+            "_template": "internal"
+          }
+        ]
+      },
+      {
+        "title": "$OZ",
+        "items": [
+          {
+            "label": "The $OZ Token",
+            "to": "docs/token.mdx",
+            "_template": "internal"
+          },
+          {
+            "label": "How to Buy $OZ",
+            "to": "docs/guides/buy-oz.mdx",
+            "_template": "internal"
+          },
+          {
+            "label": "Rewards & Ranks",
+            "to": "docs/guides/rewards-and-ranks.mdx",
+            "_template": "internal"
+          },
+          {
+            "label": "Contract Audits",
+            "to": "docs/audits.mdx",
+            "_template": "internal"
+          }
+        ]
+      },
+      {
+        "title": "Community",
+        "items": [
+          {
+            "label": "Telegram",
+            "href": "https://t.me/OzakAGI",
+            "_template": "external"
+          },
+          {
+            "label": "X",
+            "href": "https://x.com/OzakAGI",
+            "_template": "external"
+          },
+          {
+            "label": "Instagram",
+            "href": "https://instagram.com/OzakAGI",
+            "_template": "external"
+          },
+          {
+            "label": "Affiliate Program",
+            "to": "docs/affiliate-program.mdx",
+            "_template": "internal"
+          }
+        ]
+      },
+      {
+        "title": "Resources",
+        "items": [
+          {
+            "label": "Security & Trust",
+            "to": "docs/security.mdx",
+            "_template": "internal"
+          },
+          {
+            "label": "Brand Assets",
+            "to": "docs/brand-assets.mdx",
+            "_template": "internal"
+          },
+          {
+            "label": "Policies",
+            "to": "docs/policies.mdx",
+            "_template": "internal"
+          },
+          {
+            "label": "FAQs & Community",
+            "to": "docs/faqs.mdx",
+            "_template": "internal"
+          }
+        ]
       }
     ],
     "copyright": "Ozak AI"

@@ -1,194 +1,1163 @@
-/**
- * Any CSS included here will be global. The classic template
- * bundles Infima by default. Infima is a CSS framework designed to
- * work well for content-centric websites.
- */
+/* ==========================================================================
+   docs.ozak.ai - theme
+   Drop-in replacement for src/css/custom.css (Docusaurus 3.9.1, classic).
 
-/* You can override the default Infima variables here. */
+   Palette: Primary Black #000000, Primary White #FFFFFF, Neon Green #A6FF00.
+   Light mode carries the brand through BLACK surfaces (navbar, hero, footer,
+   Premium panel) with neon as the accent - never neon as body text.
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
 :root {
-  --ifm-color-primary: #2e8555;
-  --ifm-color-primary-dark: #29784c;
-  --ifm-color-primary-darker: #277148;
-  --ifm-color-primary-darkest: #205d3b;
-  --ifm-color-primary-light: #33925d;
-  --ifm-color-primary-lighter: #359962;
-  --ifm-color-primary-lightest: #3cad6e;
-  --ifm-code-font-size: 95%;
-  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
+  /* brand */
+  --oz-neon: #a6ff00;
+  --oz-ink: #0b0b0b;
+  --oz-ink-2: #2e322b;
+  --oz-muted: #5a5f55;
+  /* Drives every micro-label in the system (.oz-navgroup, .oz-sectionlabel,
+     .oz-card__tag, table th, breadcrumbs, pagination sublabels). Those are
+     10-13px, so none qualify for the 3:1 large-text exemption - this has to
+     clear 4.5:1. 5.1:1 on white, and still lighter than --oz-muted at 6.6:1
+     so the muted > faint hierarchy holds. */
+  --oz-faint: #6b7065;
+  --oz-rule: #e3e5de;
+  --oz-paper-2: #f5f6f1;
+  --oz-chip-bg: #edffc2;
+  --oz-chip-ink: #2f4a00;
+  --oz-warn: #c77b00;
+  --oz-warn-bg: #fffbf0;
+
+  /* type */
+  --ifm-font-family-base: Archivo, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --ifm-font-family-monospace: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  --ifm-font-size-base: 16px;
+  --ifm-line-height-base: 1.68;
+  --ifm-heading-font-weight: 700;
+  --ifm-h1-font-size: 2.6rem;
+  --ifm-h2-font-size: 1.7rem;
+  --ifm-h3-font-size: 1.19rem;
+  --ifm-code-font-size: 88%;
+  --ifm-code-background: #f1f3ec;
+  --ifm-pre-background: #f5f6f1;
+  --ifm-table-head-background: transparent;
+  --ifm-table-stripe-background: transparent;
+  --ifm-table-background: transparent;
+
+  /* Monochrome primary. Neon is an accent surface, not a link colour. */
+  --ifm-color-primary: #0b0b0b;
+  --ifm-color-primary-dark: #000;
+  --ifm-color-primary-darker: #000;
+  --ifm-color-primary-darkest: #000;
+  --ifm-color-primary-light: #2e322b;
+  --ifm-color-primary-lighter: #42473d;
+  --ifm-color-primary-lightest: #5a5f55;
+
+  --ifm-font-color-base: var(--oz-ink-2);
+  --ifm-heading-color: var(--oz-ink);
+  --ifm-toc-border-color: var(--oz-rule);
+  --ifm-hr-border-color: var(--oz-rule);
+  --ifm-global-radius: 4px;
+  --ifm-navbar-height: 60px;
+  --ifm-navbar-padding-horizontal: 28px;
+  --doc-sidebar-width: 286px;
+  --ifm-menu-color: #42473d;
+  --ifm-menu-color-active: var(--oz-ink);
+  --ifm-menu-color-background-active: #f3f5ee;
+  --ifm-menu-color-background-hover: #f5f6f1;
+  --ifm-menu-link-padding-vertical: 7px;
+  --ifm-menu-link-padding-horizontal: 12px;
+  --docusaurus-highlighted-code-line-bg: rgba(166, 255, 0, 0.16);
+
+  --oz-card-border: var(--oz-rule);
+  --oz-card-bg: #ffffff;
+
+  /* Light mode pins its own canvas explicitly. Infima's default for
+     --ifm-background-color is transparent, which leaves the canvas to the
+     browser; on a device set to dark that resolves to black, while light mode
+     keeps its near-black text colours. Setting it here keeps the two in step
+     regardless of OS preference. */
+  --ifm-background-color: #ffffff;
+  --ifm-background-surface-color: #ffffff;
+  color-scheme: light;
 }
 
-/* For readability concerns, you should choose a lighter palette in dark mode. */
-[data-theme="dark"] {
-  --ifm-color-primary: #a6ff00;
-  --ifm-color-primary-dark: #a6ff00;
-  --ifm-color-primary-darker: #a6ff00;
-  --ifm-color-primary-darkest: #a6ff00;
-  --ifm-color-primary-light: #29d5b0;
-  --ifm-color-primary-lighter: #32d8b4;
-  --ifm-color-primary-lightest: #4fddbf;
-  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
+/* Scoped as `html[data-theme='dark']` rather than `[data-theme='dark']` to match
+   the specificity of Infima's own `html[data-theme=dark]` block (0,1,1). A bare
+   attribute selector is 0,1,0 and would lose to it regardless of source order,
+   so the canvas below would fall back to Infima's #1b1b1d. Equal specificity
+   lets source order decide, and this block comes later. */
+html[data-theme='dark'] {
+  /* Inactive sidebar links. Deliberately NOT white - white is reserved for the
+     active item. 8.7:1 on #0b0b0b (AAA); active white is 19.5:1, so the two
+     stay clearly distinguishable. */
+  --ifm-menu-color: #a8aea2;
+  --ifm-code-background: rgba(255, 255, 255, 0.08);
+  --ifm-pre-background: rgba(255, 255, 255, 0.04);
+  --ifm-table-head-background: transparent;
+  --ifm-table-stripe-background: transparent;
+  --ifm-table-background: transparent;
+  --oz-ink: #ffffff;
+  --oz-ink-2: rgba(255, 255, 255, 0.84);
+  --oz-muted: rgba(255, 255, 255, 0.62);
+  --oz-faint: #949b8e;
+  --oz-rule: rgba(255, 255, 255, 0.14);
+  --oz-paper-2: rgba(255, 255, 255, 0.04);
+  --oz-chip-bg: rgba(166, 255, 0, 0.16);
+  --oz-chip-ink: #cbff7a;
+  --oz-warn: #e2a53a;
+  --oz-warn-bg: rgba(226, 165, 58, 0.08);
+
+  --ifm-color-primary: #ffffff;
+  --ifm-color-primary-dark: #e6e6e6;
+  --ifm-color-primary-darker: #d9d9d9;
+  --ifm-color-primary-darkest: #b3b3b3;
+  --ifm-color-primary-light: #ffffff;
+  --ifm-color-primary-lighter: #ffffff;
+  --ifm-color-primary-lightest: #ffffff;
+
+  --ifm-background-color: #0b0b0b;
+  --ifm-background-surface-color: #101110;
+  --ifm-menu-color-background-active: rgba(255, 255, 255, 0.06);
+  --ifm-menu-color-background-hover: rgba(255, 255, 255, 0.04);
+  --oz-card-border: rgba(255, 255, 255, 0.14);
+  --oz-card-bg: rgba(255, 255, 255, 0.03);
+  color-scheme: dark;
 }
 
-.hero--primary {
-  background-image: url(/img/page-hero-bg.e246a7269fe8b1e570a6218ac5f41f5b.svg) !important;
-  background-size: cover !important;
-  background-position: center !important;
-  background-repeat: no-repeat !important;
+::selection { background: var(--oz-neon); color: #0b0b0b; }
+
+/* ---------- 1. Navbar: black in both modes ---------- */
+
+.navbar {
+  background: #0b0b0b;
+  box-shadow: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+.navbar__logo { height: 19px; }
+.navbar__link,
+.navbar__brand,
+.navbar .navbar__item {
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 14.5px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+.navbar__link:hover { color: #fff; }
+.navbar__link--active {
+  color: #fff;
+  box-shadow: inset 0 -2px 0 var(--oz-neon);
+  border-radius: 0;
+}
+/* right-hand CTA: add className:'navbar-cta' to the "Try Eon" navbar item */
+.navbar__item.navbar-cta,
+.navbar__link.navbar-cta {
+  display: inline-flex;
+  align-items: center;
+  height: 34px;
+  padding: 0 15px;
+  margin-left: 6px;
+  border-radius: 4px;
+  background: var(--oz-neon);
+  color: #0b0b0b;
+  font-weight: 700;
+  font-size: 13.5px;
+}
+.navbar__item.navbar-cta:hover { color: #0b0b0b; opacity: 0.9; }
+.navbar__toggle { color: #fff; }
+/* the colour-mode toggle sits on black now */
+.navbar .clean-btn { color: rgba(255, 255, 255, 0.7); }
+.navbar .clean-btn:hover { background: rgba(255, 255, 255, 0.08); }
+
+/* Algolia DocSearch button, restyled for the black bar */
+.navbar .DocSearch-Button {
+  height: 34px;
+  width: 236px;
+  padding: 0 10px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.04);
+}
+.navbar .DocSearch-Button:hover { box-shadow: none; background: rgba(255, 255, 255, 0.08); }
+.navbar .DocSearch-Button-Placeholder { font-size: 13px; color: rgba(255, 255, 255, 0.42); }
+.navbar .DocSearch-Search-Icon { color: rgba(255, 255, 255, 0.5); width: 15px; }
+.navbar .DocSearch-Button-Keys { color: rgba(255, 255, 255, 0.38); }
+.navbar .DocSearch-Button-Key {
+  background: none;
+  box-shadow: none;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 3px;
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 10px;
+  padding: 3px 4px;
+  width: auto;
 }
 
-.navbar__title {
-  display: none !important;
+/* ---------- 2. Sidebar: grouped, roomier, neon active bar ---------- */
+
+.theme-doc-sidebar-container { border-right: 1px solid var(--oz-rule) !important; }
+.menu { padding: 26px 0 60px !important; font-size: 14px; font-weight: 400; }
+.menu__list .menu__list { margin-left: 20px; padding-left: 0; border-left: 1px solid var(--oz-rule); }
+.menu__link,
+.menu__list-item-collapsible > .menu__link {
+  padding: 7px 22px 7px 26px;
+  margin: 1px 0;
+  border-radius: 0;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.35;
+  color: var(--ifm-menu-color);
+}
+.menu__list .menu__list .menu__link { padding-left: 16px; font-size: 13.5px; }
+.menu__link:hover { background: var(--ifm-menu-color-background-hover); }
+.menu__link--active:not(.menu__link--sublist) {
+  font-weight: 600;
+  color: var(--oz-ink);
+  background: var(--ifm-menu-color-background-active);
+  box-shadow: inset 2px 0 0 var(--oz-neon);
+}
+.menu__list-item-collapsible:hover { background: transparent; }
+.menu__caret { padding-right: 20px; }
+.menu__caret:before { background-size: 1.4rem 1.4rem; opacity: 0.5; }
+[data-theme='dark'] .menu__caret:before { opacity: 0.75; filter: invert(1); }
+
+/* Section headings in the sidebar.
+   Set these categories in sidebars.js with { type:'html', value:'<span>Eon</span>',
+   className:'oz-navgroup', defaultStyle:true } - see HANDOFF.md. */
+.oz-navgroup {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 18px 22px 9px 26px;
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--oz-faint);
+}
+.oz-navgroup:before { content: ''; width: 12px; height: 2px; background: var(--oz-neon); flex: none; }
+
+/* Same heading, produced the other way. Tina's sidebar schema has no 'html'
+   item type, so on the real site these are depth-0 categories with link "none";
+   sidebars.js marks them .oz-navgroup-cat and makes them non-collapsible. */
+.oz-navgroup-cat > .menu__list-item-collapsible { background: none; }
+.oz-navgroup-cat > .menu__list-item-collapsible > .menu__link {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 18px 22px 9px 26px;
+  margin: 0;
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--oz-faint);
+  cursor: default;
+  background: none;
+}
+.oz-navgroup-cat > .menu__list-item-collapsible > .menu__link:before {
+  content: '';
+  width: 12px;
+  height: 2px;
+  background: var(--oz-neon);
+  flex: none;
+}
+.oz-navgroup-cat > .menu__list-item-collapsible > .menu__link:after { display: none; }
+/* children sit at root indent, not nested - the label is a heading, not a parent */
+.oz-navgroup-cat > .menu__list { margin-left: 0; border-left: 0; }
+.oz-navgroup-cat > .menu__list .menu__link { padding-left: 26px; font-size: 14px; }
+.oz-navgroup-cat > .menu__list .menu__list .menu__link { padding-left: 16px; font-size: 13.5px; }
+
+/* ---------- 3. Content rhythm ---------- */
+
+.theme-doc-markdown { max-width: 800px; }
+.markdown h1:first-child { font-size: var(--ifm-h1-font-size); letter-spacing: -0.033em; line-height: 1.06; }
+.markdown h1, .markdown h2, .markdown h3 { letter-spacing: -0.025em; text-wrap: balance; }
+.markdown > h2 { margin-top: 3.2rem; margin-bottom: 1rem; }
+.markdown > h3 { margin-top: 2.4rem; }
+.markdown > p { text-wrap: pretty; }
+.markdown a { text-underline-offset: 3px; text-decoration-color: rgba(11, 11, 11, 0.3); }
+.markdown a:hover { text-decoration-color: var(--oz-neon); text-decoration-thickness: 2px; }
+[data-theme='dark'] .markdown a { text-decoration-color: rgba(255, 255, 255, 0.35); }
+
+.hash-link { opacity: 0; transition: opacity 0.12s; }
+.hash-link:before { content: '#'; color: var(--oz-faint); }
+:hover > .hash-link, .hash-link:focus { opacity: 1; }
+
+/* Code: hairline surfaces at 4px, matching every other block in the system.
+   Without an explicit --ifm-pre-background these kept Infima light default. */
+.markdown pre,
+[class*="codeBlockContainer"] {
+  background: var(--ifm-pre-background);
+  border: 1px solid var(--oz-rule);
+  border-radius: 4px;
+  box-shadow: none;
+}
+[class*="codeBlockContainer"] pre { border: 0; border-radius: 0; background: none; }
+.markdown pre code {
+  background: none;
+  border: 0;
+  padding: 0;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--oz-ink-2);
+}
+.markdown p code,
+.markdown li code,
+.markdown td code,
+.markdown a code {
+  background: var(--ifm-code-background);
+  border: 1px solid var(--oz-rule);
+  border-radius: 3px;
+  padding: 1px 5px;
+  color: var(--oz-ink);
+  /* clone keeps the border intact when a long value wraps mid-token */
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  overflow-wrap: anywhere;
+}
+/* In a table cell, a long value should widen the cell and let the table scroll
+   rather than wrap and break its own border box. */
+.markdown td code,
+.markdown th code { white-space: nowrap; overflow-wrap: normal; }
+
+/* Tables: hairlines only, mono micro header */
+/* display:block + overflow-x is Infima's default and is what lets a wide table
+   (the 5-column tokenomics one) scroll instead of breaking the layout. */
+/* display:block + overflow-x is Infima's default and is what lets a wide table
+   (the 5-column tokenomics one) scroll instead of breaking the layout.
+   width must stay auto - width:100% ignores the landing-page gutter margins
+   and pushes the table past the pane edge. */
+.markdown table { display: block; width: auto; overflow-x: auto; border-collapse: collapse; font-size: 14.5px; }
+.markdown table thead { background: none; }
+/* Infima paints --ifm-table-head-background on the TH itself and stripes even
+   rows. Resetting TR alone left header cells light in dark mode. */
+.markdown table th,
+.markdown table td { background: none !important; }
+.markdown table thead tr,
+.markdown table tr:nth-child(2n) { background: none !important; }
+.markdown table thead tr { border-bottom: 1px solid var(--oz-ink); }
+.markdown table th {
+  border: 0;
+  padding: 0 16px 10px 0;
+  text-align: left;
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--oz-faint);
+}
+.markdown table td { border: 0; border-bottom: 1px solid var(--oz-rule); padding: 14px 16px 14px 0; line-height: 1.5; color: var(--oz-muted); }
+.markdown table tr { background: none !important; }
+.markdown table td:first-child { color: var(--oz-ink); font-weight: 600; }
+
+/* Admonitions: no pastel blocks, mono label, 3px bar */
+.theme-admonition {
+  border: 0;
+  border-left: 3px solid var(--oz-ink);
+  border-radius: 0 4px 4px 0;
+  background: var(--oz-paper-2);
+  padding: 16px 18px;
+  box-shadow: none;
+}
+.theme-admonition .admonitionHeading_node_modules-\@docusaurus-theme-classic-lib-theme-Admonition-Layout-styles-module,
+.theme-admonition > div:first-child {
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #4b5142;
+  margin-bottom: 8px;
+}
+.theme-admonition > div:first-child svg { display: none; }
+.theme-admonition p:last-child { margin-bottom: 0; }
+.theme-admonition-tip { border-left-color: var(--oz-neon); }
+.theme-admonition-caution,
+.theme-admonition-warning,
+.theme-admonition-danger { border-left-color: var(--oz-warn); background: var(--oz-warn-bg); }
+.theme-admonition-caution > div:first-child,
+.theme-admonition-warning > div:first-child,
+.theme-admonition-danger > div:first-child { color: #8a5a00; }
+
+/* TOC */
+.table-of-contents { font-size: 13.5px; border-left: 0; padding-left: 0; }
+.table-of-contents__left-border { border: 0; }
+.table-of-contents__link { display: block; padding: 6px 0 6px 12px; border-left: 1px solid var(--oz-rule); color: var(--oz-muted); }
+.table-of-contents__link--active { color: var(--oz-ink); font-weight: 600; border-left-color: var(--oz-neon); }
+.theme-doc-toc-desktop:before {
+  content: 'On this page';
+  display: block;
+  margin-bottom: 14px;
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--oz-faint);
 }
 
-.hero__title {
-  color: white !important;
-  font-weight: 600 !important;
+/* Breadcrumbs + prev/next */
+.breadcrumbs__item .breadcrumbs__link { background: none; padding: 0; font-size: 13px; color: var(--oz-faint); }
+.breadcrumbs__item--active .breadcrumbs__link { color: var(--oz-ink); font-weight: 500; }
+.pagination-nav__link { border: 1px solid var(--oz-rule); border-radius: 4px; padding: 14px 16px; }
+.pagination-nav__sublabel {
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--oz-faint);
+  margin-bottom: 8px;
+}
+.pagination-nav__label { font-size: 15.5px; font-weight: 600; color: var(--oz-ink); }
+.pagination-nav__label:after, .pagination-nav__label:before { content: ''; }
+
+/* ---------- 4. Footer: brand black, not slate ---------- */
+
+.footer--dark { --ifm-footer-background-color: #0b0b0b; background: #0b0b0b; border-top: 3px solid var(--oz-neon); padding: 56px 0 30px; }
+.footer__title {
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #7e857a;
+  margin-bottom: 15px;
+}
+.footer__link-item { display: block; padding: 5px 0; font-size: 14px; color: rgba(255, 255, 255, 0.72); }
+.footer__link-item:hover { color: var(--oz-neon); text-decoration: none; }
+.footer__item { margin: 0; }
+.footer__links { margin-bottom: 44px; }
+.footer__bottom { text-align: left; border-top: 1px solid rgba(255, 255, 255, 0.12); padding-top: 22px; font-size: 13px; color: rgba(255, 255, 255, 0.42); }
+.footer__copyright { color: rgba(255, 255, 255, 0.42); font-size: 13px; }
+
+/* ==========================================================================
+   MDX components
+   ========================================================================== */
+
+/* ---------- hero: full-bleed black band ---------- */
+/*
+  Landing pages carry <Head><body className="oz-landing" /></Head> in their MDX.
+  That class unwinds the Docusaurus container/row/col padding so the hero spans
+  the whole doc pane, then re-establishes the reading gutter on everything else.
+  No swizzle required.
+
+  --oz-frame is the shared centred frame; --oz-gutter is the left edge that both
+  the hero copy and the body copy align to.
+*/
+
+:root { --oz-frame: 1120px; --oz-gutter: 56px; }
+
+.oz-landing main > .container {
+  max-width: none;
+  padding-left: 0;
+  padding-right: 0;
+  padding-top: 0 !important;
+}
+.oz-landing .row { margin-left: 0; margin-right: 0; }
+.oz-landing .col { padding-left: 0; padding-right: 0; }
+.oz-landing .theme-doc-markdown { max-width: none; }
+.oz-landing .theme-doc-breadcrumbs { display: none; }
+
+/* every block except the hero gets the reading gutter back */
+.oz-landing .markdown > *:not(.oz-hero) {
+  max-width: 688px;
+  margin-left: max(var(--oz-gutter), calc((100% - var(--oz-frame)) / 2 + var(--oz-gutter)));
+  margin-right: var(--oz-gutter);
+}
+.oz-landing .theme-doc-footer,
+.oz-landing .pagination-nav {
+  margin-left: max(var(--oz-gutter), calc((100% - var(--oz-frame)) / 2 + var(--oz-gutter)));
+  margin-right: var(--oz-gutter);
 }
 
-html[data-theme="light"] .navbar .navbar__logo {
-  content: url(/img/Ozak-logo-Black.png);
+.oz-hero {
+  position: relative;
+  margin: 0 0 3rem;
+  padding: 78px 0 68px;
+  background: #0b0b0b;
+  border-bottom: 3px solid var(--oz-neon);
+  border-radius: 0;
+  color: #fff;
 }
-html[data-theme="dark"] .navbar .navbar__logo {
+/* hero copy aligns to the same left edge as the body copy below it */
+.oz-hero > * {
+  max-width: 1008px;
+  margin-left: max(var(--oz-gutter), calc((100% - var(--oz-frame)) / 2 + var(--oz-gutter)));
+  margin-right: var(--oz-gutter);
+}
+
+/* Fallback: a hero on a page WITHOUT the oz-landing body class still reads as a
+   band, it just stops at the article padding instead of the pane edge.
+   Must be scoped to body - a bare :not(.oz-landing) matches every ancestor. */
+body:not(.oz-landing) .markdown > .oz-hero {
+  margin: -1.5rem calc(-1 * var(--ifm-spacing-horizontal)) 3rem;
+  padding: 78px var(--ifm-spacing-horizontal) 68px;
+}
+body:not(.oz-landing) .markdown > .oz-hero > * { margin-left: 0; margin-right: 0; }
+
+.oz-hero__eyebrow {
+  display: flex;
+  width: fit-content;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 22px;
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--oz-neon);
+}
+.oz-hero__eyebrow:before { content: ''; width: 20px; height: 2px; background: var(--oz-neon); flex: none; }
+
+.oz-hero__title {
+  margin-bottom: 20px;
+  max-width: 20ch;
+  font-size: clamp(2rem, 4.4vw, 3.375rem);
+  font-weight: 700;
+  line-height: 1.03;
+  letter-spacing: -0.035em;
+  color: #fff;
+  text-wrap: balance;
+  hyphens: none;
+}
+.oz-hero__sub { margin-bottom: 32px; max-width: 60ch; font-size: 18px; line-height: 1.62; color: rgba(255, 255, 255, 0.7); text-wrap: pretty; }
+.oz-hero__cta { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 0; }
+
+.oz-btn {
+  display: inline-flex;
+  align-items: center;
+  height: 44px;
+  padding: 0 22px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  text-decoration: none !important;
+  transition: opacity 0.15s ease, background-color 0.15s ease;
+}
+.oz-btn--primary { background: var(--oz-neon); color: #0b0b0b !important; }
+.oz-btn--primary:hover { opacity: 0.88; }
+.oz-btn--ghost { border-color: rgba(255, 255, 255, 0.26); color: #fff !important; font-weight: 600; }
+.oz-btn--ghost:hover { background: rgba(255, 255, 255, 0.08); }
+
+/* ---------- section label ---------- */
+
+.oz-sectionlabel {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 3.6rem 0 0.5rem;
+  padding: 0;
+  border: 0;
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--oz-faint);
+}
+.oz-sectionlabel:after { content: ''; height: 1px; background: var(--oz-rule); flex: 1; }
+
+/* ---------- nav list: the default index pattern ----------
+   Replaces most card grids. Title column + description + arrow, hairline rows. */
+
+.oz-list { margin: 0.5rem 0 2rem; border-top: 1px solid var(--oz-rule); }
+.oz-list__row {
+  display: grid;
+  grid-template-columns: 250px 1fr auto;
+  gap: 24px;
+  align-items: baseline;
+  padding: 19px 4px;
+  border-bottom: 1px solid var(--oz-rule);
+  text-decoration: none !important;
+  transition: background-color 0.12s ease;
+}
+a.oz-list__row:hover { background: var(--oz-paper-2); box-shadow: inset 2px 0 0 var(--oz-neon); }
+.oz-list__title { display: flex; align-items: baseline; gap: 9px; font-size: 16px; font-weight: 600; letter-spacing: -0.015em; color: var(--oz-ink); }
+.oz-list__desc { font-size: 14.5px; line-height: 1.5; color: var(--oz-muted); }
+a.oz-list__row:after { content: '→'; font-size: 15px; color: var(--oz-faint); }
+a.oz-list__row:hover:after { color: var(--oz-ink); }
+.oz-chip {
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  padding: 3px 5px;
+  border-radius: 2px;
+  background: var(--oz-chip-bg);
+  color: var(--oz-chip-ink);
+}
+
+/* ---------- cards: landing pages only, 3 max ---------- */
+
+.oz-grid { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); margin: 1.1rem 0 2rem; }
+.oz-grid--2 { grid-template-columns: repeat(auto-fit, minmax(310px, 1fr)); }
+.oz-grid--wide { grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); }
+
+.oz-card {
+  display: flex;
+  flex-direction: column;
+  padding: 18px 18px 20px;
+  border: 1px solid var(--oz-card-border);
+  border-top: 2px solid var(--oz-ink);
+  border-radius: 4px;
+  background: var(--oz-card-bg);
+  text-decoration: none !important;
+  transition: border-color 0.14s ease, background-color 0.14s ease;
+}
+a.oz-card:hover { border-top-color: var(--oz-neon); background: var(--oz-paper-2); }
+.oz-card__tag {
+  margin: 0 0 14px;
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--oz-faint);
+}
+.oz-card__title { margin: 0 0 7px; font-size: 17px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.3; color: var(--oz-ink); }
+.oz-card__desc { margin: 0; font-size: 14px; line-height: 1.55; color: var(--oz-muted); }
+.oz-card__meta { margin: auto 0 0; padding-top: 16px; font-size: 14px; font-weight: 600; color: var(--oz-ink); }
+.oz-card ul { margin: 0.6rem 0 0; padding-left: 0; list-style: none; }
+.oz-card li { display: grid; grid-template-columns: 16px 1fr; gap: 10px; margin-bottom: 10px; font-size: 14.5px; line-height: 1.45; }
+.oz-card li:before { content: '✓'; font-size: 12px; color: var(--oz-faint); }
+
+/* Dark mode: the inverted panel is black on a near-black page, so its border
+   disappears and it reads as detached. Neon top stripe + a faint lift. */
+[data-theme='dark'] .oz-card--feature {
+  background: rgba(166, 255, 0, 0.045);
+  border-color: rgba(255, 255, 255, 0.14);
+  border-top: 2px solid var(--oz-neon);
+}
+[data-theme='dark'] .oz-card--feature .oz-card__title--plan + .oz-card__desc { border-bottom-color: rgba(255, 255, 255, 0.14); }
+
+/* Media card - image on top, body below. Used by the Widgets index. */
+.oz-card--media { padding: 0; overflow: hidden; }
+.oz-card__img {
+  display: block;
+  width: 100%;
+  height: 170px;
+  object-fit: cover;
+  border-bottom: 1px solid var(--oz-card-border);
+}
+.oz-card__body { display: flex; flex-direction: column; flex: 1; padding: 16px 18px 18px; }
+.oz-card--media .oz-card__title { margin-bottom: 6px; }
+
+/* Inverted panel - the recommended/premium option, one per grid */
+.oz-card--feature { background: #0b0b0b; border-color: #0b0b0b; color: #fff; }
+.oz-card--feature .oz-card__title, .oz-card--feature .oz-card__meta { color: #fff; }
+.oz-card--feature .oz-card__desc { color: rgba(255, 255, 255, 0.7); }
+.oz-card--feature .oz-card__tag { color: var(--oz-neon); }
+.oz-card--feature li { color: rgba(255, 255, 255, 0.86); }
+.oz-card--feature li:before { color: var(--oz-neon); }
+
+/* Numbered step badge - square, not a circle */
+.oz-card__num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  margin-bottom: 14px;
+  border-radius: 3px;
+  background: var(--oz-neon);
+  color: #0b0b0b;
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+/* ---------- brand assets ---------- */
+
+.oz-swatch { display: block; height: 104px; margin: -18px -18px 0; border-bottom: 1px solid var(--oz-rule); }
+.oz-hex { font-family: var(--ifm-font-family-monospace); font-size: 13px; font-weight: 700; margin: 14px 0 8px; }
+.oz-dl {
+  display: inline-flex;
+  align-items: center;
+  height: 30px;
+  padding: 0 11px;
+  margin-right: 8px;
+  border: 1px solid var(--oz-rule);
+  border-radius: 3px;
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+  color: var(--oz-ink);
+  text-decoration: none !important;
+}
+.oz-dl:hover { border-color: var(--oz-ink); }
+.oz-dl:after { content: ' ↓'; }
+
+/* ---------- reference-page chip groups (indicator libraries etc.) ---------- */
+
+.oz-defs { border-top: 1px solid var(--oz-ink); }
+.oz-defs__row { display: grid; grid-template-columns: 180px 1fr; gap: 28px; padding: 20px 0; border-bottom: 1px solid var(--oz-rule); }
+.oz-defs__label {
+  padding-top: 5px;
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.11em;
+  line-height: 1.4;
+  text-transform: uppercase;
+  color: var(--oz-ink);
+}
+.oz-defs__items { display: flex; flex-wrap: wrap; gap: 6px; }
+/* standalone chip group, outside an .oz-defs__row */
+.markdown > .oz-defs__items { margin: 1.2rem 0 1.8rem; }
+.oz-tag {
+  display: inline-flex;
+  align-items: center;
+  height: 28px;
+  padding: 0 10px;
+  border: 1px solid var(--oz-rule);
+  border-radius: 3px;
+  background: var(--oz-card-bg);
+  font-size: 13.5px;
+  color: var(--oz-ink-2);
+  white-space: nowrap;
+}
+
+/* ---------- embedded widget ----------
+   The real widgets are interactive configurators served from the docs host at
+   /widgets/<slug>.html. This is the frame they sit in: hairline, 4px, mono
+   label strip, no shadow - same vocabulary as every other block. */
+
+.oz-embed {
+  margin: 1.5rem 0;
+  border: 1px solid var(--oz-card-border);
+  border-radius: 4px;
+  overflow: hidden;
+  background: var(--oz-card-bg);
+}
+.oz-embed__bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--oz-card-border);
+  background: var(--oz-paper-2);
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--oz-faint);
+  white-space: nowrap;
+}
+.oz-embed__bar:before { content: ''; width: 12px; height: 2px; background: var(--oz-neon); flex: none; }
+.oz-embed__slug { margin-left: auto; letter-spacing: 0.04em; text-transform: none; color: var(--oz-muted); }
+.oz-embed iframe { display: block; width: 100%; border: 0; background: transparent; }
+.oz-embed__note {
+  padding: 12px 14px;
+  border-top: 1px solid var(--oz-card-border);
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--oz-muted);
+}
+/* stand-in shown when the configurator cannot load (local dev, or blocked) */
+.oz-embed__fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 260px;
+  padding: 32px;
+  text-align: center;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--oz-faint);
+  background: repeating-linear-gradient(45deg, transparent, transparent 10px, var(--oz-paper-2) 10px, var(--oz-paper-2) 20px);
+}
+
+/* ---------- stat block (fixed supply etc.) ---------- */
+
+.oz-stat { background: #0b0b0b; color: #fff; border-radius: 4px; padding: 30px; margin: 1.5rem 0; }
+[data-theme='dark'] .oz-stat,
+[data-theme='dark'] .oz-panel { border: 1px solid rgba(255, 255, 255, 0.14); border-top: 2px solid var(--oz-neon); background: rgba(255, 255, 255, 0.03); }
+.oz-stat__label { font-family: var(--ifm-font-family-monospace); font-size: 10px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--oz-neon); margin-bottom: 14px; }
+.oz-stat__value { font-family: var(--ifm-font-family-monospace); font-size: 42px; font-weight: 700; line-height: 1; letter-spacing: -0.035em; }
+.oz-stat__note { margin-top: 12px; font-size: 15px; color: rgba(255, 255, 255, 0.62); }
+.oz-bar { display: flex; gap: 2px; height: 10px; margin-top: 26px; border-radius: 2px; overflow: hidden; }
+.oz-bar__legend { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-top: 18px; }
+.oz-bar__pct { display: flex; align-items: center; gap: 7px; margin-bottom: 5px; font-family: var(--ifm-font-family-monospace); font-size: 13px; font-weight: 700; }
+.oz-bar__dot { width: 8px; height: 8px; border-radius: 1px; flex: none; }
+.oz-bar__name { font-size: 12px; line-height: 1.35; color: rgba(255, 255, 255, 0.6); }
+
+/* pull quote */
+.oz-lead {
+  margin: 26px 0;
+  padding: 2px 0 2px 22px;
+  border-left: 3px solid var(--oz-neon);
+  font-size: 21px;
+  line-height: 1.45;
+  letter-spacing: -0.018em;
+  font-weight: 600;
+  color: var(--oz-ink);
+  text-wrap: pretty;
+}
+
+
+/* ---------- steps: numbered flows ---------- */
+
+.oz-steps { margin: 1.2rem 0 2rem; border-top: 1px solid var(--oz-rule); }
+.oz-steps__row {
+  display: grid;
+  grid-template-columns: 26px 210px 1fr auto;
+  gap: 20px;
+  align-items: start;
+  padding: 18px 4px;
+  border-bottom: 1px solid var(--oz-rule);
+  text-decoration: none !important;
+}
+a.oz-steps__row:hover { background: var(--oz-paper-2); }
+.oz-steps--compact .oz-steps__row { grid-template-columns: 26px 1fr; padding: 13px 4px; }
+.oz-steps__num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 3px;
+  background: var(--oz-neon);
+  color: #0b0b0b;
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 13px;
+  font-weight: 700;
+}
+.oz-steps__title { padding-top: 3px; font-size: 16px; font-weight: 600; letter-spacing: -0.015em; color: var(--oz-ink); }
+.oz-steps__desc { padding-top: 4px; font-size: 14.5px; line-height: 1.5; color: var(--oz-muted); }
+.oz-steps__meta {
+  padding-top: 6px;
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--oz-faint);
+  white-space: nowrap;
+}
+.oz-steps__meta--chip {
+  padding: 4px 6px;
+  margin-top: 3px;
+  border-radius: 2px;
+  background: var(--oz-chip-bg);
+  color: var(--oz-chip-ink);
+}
+
+/* ---------- FAQ ---------- */
+
+.oz-faq { margin: 0.5rem 0 2rem; border-top: 1px solid var(--oz-rule); }
+.oz-faq__row { padding: 20px 4px; border-bottom: 1px solid var(--oz-rule); }
+.oz-faq__q { margin: 0 0 8px; font-size: 16.5px; font-weight: 600; letter-spacing: -0.015em; color: var(--oz-ink); text-wrap: pretty; }
+.oz-faq__a { margin: 0; max-width: 68ch; font-size: 15px; line-height: 1.6; color: var(--oz-muted); text-wrap: pretty; }
+
+/* ---------- inverted warning panel ---------- */
+
+.oz-panel { margin: 2.5rem 0; padding: 28px 30px 30px; border-radius: 4px; background: #0b0b0b; color: #fff; }
+.oz-panel__label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 20px;
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--oz-neon);
+}
+.oz-panel__label:before { content: ''; width: 18px; height: 2px; background: var(--oz-neon); flex: none; }
+.oz-panel__row { display: grid; grid-template-columns: 20px 210px 1fr; gap: 16px; align-items: baseline; padding: 15px 0; border-top: 1px solid rgba(255, 255, 255, 0.14); }
+.oz-panel__x { font-size: 14px; font-weight: 700; color: #ff5c39; }
+.oz-panel__title { font-size: 16px; font-weight: 600; letter-spacing: -0.015em; }
+.oz-panel__desc { font-size: 14.5px; line-height: 1.55; color: rgba(255, 255, 255, 0.66); }
+.oz-panel__foot { margin: 22px 0 0; font-size: 14.5px; line-height: 1.6; color: rgba(255, 255, 255, 0.5); }
+
+/* Amber variant - a costly mistake, not a security threat. Lighter weight than
+   the black panel so the two severities do not read the same. */
+.oz-panel--warn { background: var(--oz-warn-bg); color: var(--oz-ink-2); border: 1px solid rgba(199, 123, 0, 0.28); }
+.oz-panel--warn .oz-panel__label { color: #8a5a00; }
+.oz-panel--warn .oz-panel__label:before { background: var(--oz-warn); }
+.oz-panel--warn .oz-panel__row { border-top-color: rgba(199, 123, 0, 0.22); }
+.oz-panel--warn .oz-panel__x { color: var(--oz-warn); }
+.oz-panel--warn .oz-panel__title { color: var(--oz-ink); }
+.oz-panel--warn .oz-panel__desc { color: var(--oz-muted); }
+.oz-panel--warn .oz-panel__foot { color: var(--oz-muted); }
+
+/* ---------- premium pill ---------- */
+
+.oz-premium {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  margin: 0 0 1.2rem;
+  padding: 6px 12px 6px 10px;
+  border-radius: 3px;
+  background: #0b0b0b;
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--oz-neon);
+}
+.oz-premium:before { content: ''; width: 12px; height: 2px; background: var(--oz-neon); }
+
+/* ---------- facts strip ---------- */
+
+.oz-split { display: grid; grid-template-columns: repeat(3, 1fr); margin: 1.8rem 0 2rem; border-top: 1px solid var(--oz-ink); }
+.oz-split--2 { grid-template-columns: repeat(2, 1fr); }
+.oz-split > div { padding: 16px 20px 18px; border-right: 1px solid var(--oz-rule); }
+.oz-split > div:first-child { padding-left: 0; }
+.oz-split > div:last-child { border-right: 0; padding-right: 0; }
+.oz-split__label {
+  margin: 0 0 9px;
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--oz-faint);
+}
+.oz-split__val { margin: 0; font-size: 15px; line-height: 1.5; color: var(--oz-ink-2); }
+
+/* ---------- key/value anatomy grid ---------- */
+
+.oz-anatomy { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0 32px; margin: 1.4rem 0 2rem; border-top: 1px solid var(--oz-ink); }
+.oz-anatomy__row { display: grid; grid-template-columns: 130px 1fr; gap: 16px; padding: 13px 0; border-bottom: 1px solid var(--oz-rule); }
+.oz-anatomy__k {
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--oz-faint);
+}
+.oz-anatomy__v { font-size: 14px; line-height: 1.45; color: var(--oz-ink-2); }
+
+/* ---------- channel chips ---------- */
+
+.oz-chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 1.2rem 0 1.5rem; }
+.oz-chiplink {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  height: 38px;
+  padding: 0 14px;
+  border: 1px solid var(--oz-rule);
+  border-radius: 3px;
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+  color: var(--oz-ink);
+  text-decoration: none !important;
+}
+.oz-chiplink:hover { border-color: var(--oz-ink); }
+.oz-chiplink span {
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--oz-faint);
+}
+
+/* ---------- example prompts ---------- */
+
+.oz-prompts { margin: 1.2rem 0 2rem; display: grid; gap: 8px; }
+.oz-prompt {
+  margin: 0;
+  padding: 14px 16px;
+  border: 1px solid var(--oz-rule);
+  border-left: 3px solid var(--oz-neon);
+  border-radius: 0 4px 4px 0;
+  background: var(--oz-paper-2);
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--oz-ink-2);
+}
+.oz-prompt:before { content: '\201C'; }
+.oz-prompt:after { content: '\201D'; }
+
+/* ---------- list variants ---------- */
+
+.oz-list__row { grid-template-columns: 250px 1fr; }
+a.oz-list__row { grid-template-columns: 250px 1fr auto; }
+.oz-list--plan a.oz-list__row,
+.oz-list--plan .oz-list__row { grid-template-columns: 210px 1fr 76px auto; }
+/* non-anchor rows carrying a trailing chip/meta cell */
+.oz-list--meta .oz-list__row { grid-template-columns: 250px 1fr auto; }
+.oz-list--plan .oz-list__row:not(a) { grid-template-columns: 210px 1fr 76px; }
+.oz-list--numbered .oz-list__row,
+.oz-list--numbered a.oz-list__row { grid-template-columns: 34px 190px 1fr; align-items: baseline; padding: 20px 4px; }
+.oz-list--numbered a.oz-list__row:after { display: none; }
+.oz-list__n { font-family: var(--ifm-font-family-monospace); font-size: 12px; font-weight: 700; color: var(--oz-faint); }
+.oz-list__plan {
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--oz-faint);
+}
+.oz-list--numbered .oz-list__title { flex-direction: column; align-items: flex-start; gap: 6px; }
+
+/* ---------- brand asset tiles ---------- */
+
+.oz-asset { border: 1px solid var(--oz-card-border); border-radius: 4px; overflow: hidden; }
+.oz-asset__preview { display: flex; align-items: center; justify-content: center; height: 132px; border-bottom: 1px solid var(--oz-rule); }
+.oz-asset__preview img { height: 26px; width: auto; }
+.oz-asset__preview--light { background: #ffffff; }
+.oz-asset__preview--dark { background: #0b0b0b; }
+.oz-asset__body { padding: 14px 16px 16px; }
+.oz-asset__title { margin: 0 0 3px; font-size: 15px; font-weight: 600; color: var(--oz-ink); }
+.oz-asset__desc { margin: 0 0 14px; font-size: 13.5px; color: var(--oz-muted); }
+
+/* ---------- type specimen ---------- */
+
+.oz-type { margin: 1.2rem 0 2rem; padding: 26px 24px; border: 1px solid var(--oz-card-border); border-radius: 4px; }
+.oz-type__specimen { margin: 0 0 10px; font-size: 44px; line-height: 1.05; letter-spacing: -0.035em; font-weight: 700; color: var(--oz-ink); }
+.oz-type__desc { margin: 0; max-width: 52ch; font-size: 16px; line-height: 1.6; color: var(--oz-muted); }
+.oz-type__roles { display: flex; flex-wrap: wrap; gap: 26px; margin-top: 22px; padding-top: 20px; border-top: 1px solid var(--oz-rule); }
+.oz-type__role {
+  margin: 0 0 7px;
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--oz-faint);
+}
+.oz-type__val { margin: 0; font-size: 15px; font-weight: 600; color: var(--oz-ink); }
+.oz-type__val--mono { font-family: var(--ifm-font-family-monospace); }
+
+/* plan cards get a bigger name */
+.oz-card__title--plan { font-size: 30px; letter-spacing: -0.03em; margin-bottom: 4px; }
+.oz-card__title--plan + .oz-card__desc { margin-bottom: 20px; padding-bottom: 18px; border-bottom: 1px solid var(--oz-rule); }
+.oz-card--feature .oz-card__title--plan + .oz-card__desc { border-bottom-color: rgba(255, 255, 255, 0.15); }
+
+@media (max-width: 996px) {
+  .oz-steps__row, .oz-steps--compact .oz-steps__row { grid-template-columns: 26px 1fr; gap: 14px; }
+  .oz-steps__meta { grid-column: 2; padding-top: 0; }
+  .oz-split, .oz-split--2, .oz-anatomy { grid-template-columns: 1fr; }
+  .oz-split > div { padding: 14px 0; border-right: 0; border-bottom: 1px solid var(--oz-rule); }
+  .oz-panel__row { grid-template-columns: 20px 1fr; }
+  .oz-panel__desc { grid-column: 2; }
+  .oz-list--plan a.oz-list__row, .oz-list--plan .oz-list__row,
+  .oz-list--meta .oz-list__row,
+  .oz-list--numbered .oz-list__row, .oz-list--numbered a.oz-list__row { grid-template-columns: 1fr; }
+  .oz-list--plan .oz-list__row > *, .oz-list--meta .oz-list__row > * { justify-self: start; }
+}
+
+/* ---------- small screens ---------- */
+
+@media (max-width: 996px) {
+  .oz-list__row, .oz-defs__row { grid-template-columns: 1fr; gap: 6px; }
+  a.oz-list__row:after { display: none; }
+  .oz-bar__legend { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 996px) {
+  :root { --oz-gutter: 20px; }
+}
+@media (max-width: 570px) {
+  .oz-hero { padding: 48px 0 44px; }
+  .oz-hero__cta { flex-direction: column; align-items: stretch; }
+  .oz-btn { justify-content: center; }
+  .oz-grid, .oz-grid--wide, .oz-grid--2 { grid-template-columns: 1fr; }
+  .oz-stat__value { font-size: 30px; }
+}
+
+
+/* ==========================================================================
+   Carried over from the previous custom.css
+   Things the old stylesheet did that this theme has no other home for.
+   ========================================================================== */
+
+/* The navbar is black in BOTH colour modes now, so the logo is always the white
+   wordmark. The old rules swapped it per mode, which would put the black logo
+   on a black bar in light mode. */
+html[data-theme='light'] .navbar .navbar__logo,
+html[data-theme='dark'] .navbar .navbar__logo {
   content: url(/img/Ozak-Logo-white.png);
 }
+.navbar__title { display: none !important; }
 
-.navbar__inner {
-  max-width: var(--ifm-container-width-xl);
-  /* padding: 0 var(--ifm-spacing-horizontal); */
-  width: 100%;
-  margin: 0 auto;
+/* Images are capped so a full-width screenshot does not dominate the column,
+   but an image wrapped in a link is a diagram meant to be opened - let those
+   fill the column and hint that they are clickable. */
+.markdown img { max-width: 100%; height: auto; border-radius: 4px; }
+.markdown a > img { cursor: zoom-in; }
+
+/* Widget preview thumbnails set their own size via .oz-card__img. */
+.markdown .oz-card__img { border-radius: 0; }
+
+/* ---------- Hero pages: suppress the duplicate doc title ---------- */
+
+/* Docusaurus renders the frontmatter `title` as an <h1> inside
+   `.theme-doc-markdown > header`. On a hero page the hero already carries the
+   headline, so the h1 is redundant there. It also sits in the padded content
+   column while the hero spans full width, which puts the two out of alignment.
+
+   Handled in CSS rather than with `hide_title` in frontmatter because Tina's
+   DocsCollection schema covers title, description and tags only, so any extra
+   frontmatter field can be dropped when a page is saved through the CMS.
+
+   Applies automatically to any page that uses .oz-hero. Pages without one keep
+   their h1. If an engine without :has() support ignores this, the h1 simply
+   reappears. */
+.theme-doc-markdown:has(.oz-hero) > header {
+  display: none;
 }
 
-.main-wrapper {
-  max-width: var(--ifm-container-width-xl);
-  /* padding: 0 var(--ifm-spacing-horizontal); */
-  width: 100%;
-  
-  margin: 30px auto;
+/* ==========================================================================
+   Layout details
+   ========================================================================== */
+
+/* Gutter between a full-width block and the right-hand table of contents.
+   .table-of-contents sets padding-left to 0, and a hero ends exactly on the TOC
+   column boundary, so the label and links would sit flush against it. Padding
+   the container shifts the label, the links and the active-item border together,
+   and covers any future full-width block. */
+.theme-doc-toc-desktop {
+  padding-left: 26px;
 }
 
-@media (max-width: 1568px) {
-  .main-wrapper {
- 
-    max-width: 100%;
-  }
-  .navbar__inner {
-    max-width: 100%;
-  }
-  
+/* Keep every widget preview the same height so the card text below starts at a
+   consistent point. `.markdown img { height: auto }` is specificity (0,1,1) and
+   takes precedence over `.oz-card__img` (0,1,0), so the height has to be set at
+   matching specificity. The source images differ in aspect ratio.
+   object-position: top keeps the widget itself in frame when cover crops. */
+.markdown .oz-card__img {
+  height: 170px;
+  object-fit: cover;
+  object-position: top;
 }
 
-.hero__subtitle {
-  color: rgba(0, 0, 1, 0.9) !important;
-  font-weight: 400 !important;
-}
-
-.docSidebarContainer_YfHR {
-  border-right: 0px !important;
-}
-
-.menu__list-item:not(:first-child) {
-  margin-top: 0.6rem !important;
-}
-
-.menu__list .menu__list {
-  border-left: 1px solid var(--ifm-color-emphasis-200) !important;
-  padding-left: 5px !important;
-  margin-left: var(--ifm-menu-link-padding-horizontal);
-}
-
-img {
-  max-width: 80% !important;
-}
-
-.contents {
-  background-color: #000 !important;
-}
-
-html[data-red-border] div#__docusaurus {
-  border: red solid thick;
-}
-
-@media (min-width: 768px) {
-  .docItemCol_node_modules-\@docusaurus-theme-classic-lib-theme-DocItem-Layout-styles-module {
-    padding: 0px 50px !important;
-  }
-}
-
-
-/* Base styling for the unordered list */
-.table-of-contents {
-  list-style-type: none; /* Removes default bullet points */
-  padding-left: 0; /* Removes default browser padding */
-}
-
-/* Styling for the main list container with a left border */
-.table-of-contents__left-border {
-  border-left: 1px solid #eee; /* Adds a subtle left border */
-  padding-left: 16px; /* Creates space between the border and the text */
-}
-
-/* Styling for each list item */
-.table-of-contents li {
-  padding: 2px 0; /* Adds vertical padding for spacing between items */
-}
-
-
-.table-of-contents__link {
-  display: block; 
-  padding: 3px 6px;
-  text-decoration: none; 
-  border-radius: 2px; /* Adds slightly rounded corners */
-  transition: all 0.3s ease; /* Adds a smooth transition for hover effects */
-  font-size: 0.9rem; /* Sets a base font size */
-}
-
-
-.col--3 {
-  --ifm-col-width: calc(4 / 12 * 100%) !important; 
-}
-/* --- Hover Effects --- */
-
-/* Changes background and text color on hover */
-.table-of-contents__link:hover {
-  background-color: rgb(170, 170, 170, 0.4); /* A light grey background on hover */
-}
-
-/* --- Active/Highlighted State --- */
-
-
-
-/* --- Nested List Styling --- */
-
-/* Adds left margin to nested lists for indentation */
-.table-of-contents ul {
-  padding-left: 16px; /* Indents the nested list */
-  list-style-type: none; /* Ensures nested lists also have no bullets */
-}
-
-
-.menu__link--active:not(.menu__link--sublist) {
-    background-color: var(--ifm-menu-color-background-active);
-}
-
-/* Architecture diagrams are linked to their full-size file so they can be
-   opened for detail. Let those use the full content width (the global img rule
-   above caps at 80%, which makes wide diagrams hard to read) and hint that
-   they are clickable. */
-.markdown a > img {
-  max-width: 100% !important;
-  cursor: zoom-in;
-}
-
-/* The SegRNN formula is a narrow image, so unlike the other formula
-   screenshots it does not fill the column and sits flush left. Centre it.
-   Substring match because Docusaurus appends a content hash to the filename. */
-.markdown img[src*="segrnn"] {
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  /* 80% of the image's natural 418x216; height follows the aspect ratio. */
-  width: 334px;
-  max-width: 100%;
-  height: auto;
+/* Brand-asset logo thumbnails, sized to sit inside the preview tile.
+   `.oz-asset__preview img` is also (0,1,1), so it needs the same .markdown
+   scope to take precedence over the generic image rule above. */
+.markdown .oz-asset__preview img {
+  height: 26px;
+  width: auto;
 }
